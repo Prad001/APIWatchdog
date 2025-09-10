@@ -1,0 +1,69 @@
+.title{
+    font-size: 30px;
+    line-height: 42px;
+    font-weight: 500;
+    margin-top: 30px ;
+    margin-left: 20px;
+    color: #3F4095;
+
+}
+
+.card-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.card{
+    width: 100%;
+    height: 150px;
+    border-radius: 8px;
+    border: 1px solid #030303;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+        background-color: #542766;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        
+    
+}
+
+.spec-card__header {
+  display: flex;
+  align-items: center;   // keeps them vertically aligned
+  gap: 5px;              // spacing between icon and text
+  margin-bottom: 12px;
+}
+
+
+.spec-card{
+    background-color: #594c97;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    border: 1px solid #030303;
+    
+}
+
+.spec-card__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    align-items: center;
+  }
+
+  .spec-card__value{
+    text-align: center;
+  }
+
+  .spec-card__label{
+    text-align: center;
+    color: #c5bcee;
+  }

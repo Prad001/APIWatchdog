@@ -1,0 +1,53 @@
+.title{
+    font-size: 32px;
+    line-height: 42px;
+    font-weight: 500;
+    margin-top: 30px ;
+    margin-left: 20px;
+    color: #3F4095;
+
+}
+
+
+
+.spec-card__header {
+  display: flex;
+  align-items: center;   // keeps them vertically aligned
+  gap: 5px;              // spacing between icon and text
+  margin-bottom: 12px;
+}
+
+
+.spec-card{
+    background-color: #633375;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    border: 1px solid #030303;
+    
+}
+
+.spec-list{
+     background-color: #361842;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    border: 1px solid #030303;
+    padding: 10px 10px;
+}
+
+.spec-card__stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    align-items: center;
+  }
+
+  .spec-card__value{
+    text-align: center;
+  }
+
+  .spec-card__label{
+    text-align: center;
+    color: #c094d8;
+  }

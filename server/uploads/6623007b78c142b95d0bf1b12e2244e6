@@ -1,0 +1,1512 @@
+{
+	"info": {
+		"_postman_id": "a1ddff0e-a7a0-42e2-80b1-6b1f48f34a79",
+		"name": "IAAS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30653137"
+	},
+	"item": [
+		{
+			"name": "Rule",
+			"item": [
+				{
+					"name": "Create Rule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ruleId\": \"\",\n    \"name\": \"Sample Rule 2\",\n    \"representation\": \"( 4 + 7 )\",\n    \"type\": \"derivative\",\n    \"organizationId\":\"32c245c6-9eb0-43d7-a977-8faa536a1895\",\n    \"pd\": null,\n    \"ad\": null,\n    \"timestamp\": \"2024-08-31T07:20:29.499+00:00\"\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/RuleService/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"RuleService",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Rule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/RuleService/read",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"RuleService",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update rule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ruleid\": \"ce8d856b-1f00-4a5a-adf6-4a2876ea7f94\",\n    \"name\": \"Updated Rule Name\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/RuleService/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"RuleService",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Rule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ruleid\":\"27c1fca0-3862-485a-aa75-e39cb2e52084\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/RuleService/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"RuleService",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Node",
+			"item": [
+				{
+					"name": "Create Node",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pd\": null,\n    \"ad\": null,\n    \"nodeId\":\"\",\n    \"rulesetId\":\"204b2b0a-7cca-4a6a-9348-f5acee9ea6b3\",\n    \"ruleId\":\"210b405b-e7f5-4d66-a113-f64d517d8fc7\",\n    \"childId\":\"\",\n    \"parentId\":\"\"\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/NodeService/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"NodeService",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Node",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/NodeService/read",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"NodeService",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Node",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nodeid\": \"ce8d856b-1f00-4a5a-adf6-4a2876ea7f94\",\n    \"name\": \"Updated Rule Name\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/NodeService/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"NodeService",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Node",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ruleid\":\"27c1fca0-3862-485a-aa75-e39cb2e52084\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/NodeService/staging/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"NodeService",
+								"staging",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ruleset",
+			"item": [
+				{
+					"name": "Create Ruleset",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rulesetId\": \"\",\n    \"name\": \"test acme ruleset\",\n    \"rulesetType\": \"risk_score\",\n    \"organizationId\":\"5329800b-834b-4767-9de4-a30c65a9da59\",\n    \"pd\": null,\n    \"ad\": null,\n    \"timestamp\": \"2024-08-31T07:20:29.499+00:00\"\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/RulesetService/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"RulesetService",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Ruleset",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"test acme ruleset\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/RulesetService/read",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"RulesetService",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Ruleset",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rulesetid\": \"9630c0f8-6a5f-4611-aac7-ed4af64afb66\",\n    \"name\": \"Updated acme ruleset\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/RulesetService/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"RulesetService",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Rule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"test acme ruleset\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/RulesetService/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"RulesetService",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Adaptive Access Node Ruleset",
+			"item": [
+				{
+					"name": "Create Adaptive Access Node Ruleset",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"adaptiveaccessnoderulesetid\": \"\",\n    \"adaptiveAccessNodeId\": \"329aca59-f617-4816-8453-bcf51efda371\",\n    \"rulesetId\": \"9630c0f8-6a5f-4611-aac7-ed4af64afb66\",\n    \"pd\": null,\n    \"ad\": null,\n    \"rulesetType\":\"risk_score\"\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AdaptiveAccessNodeRulesetService/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AdaptiveAccessNodeRulesetService",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Adaptive Access Node Ruleset",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AdaptiveAccessNodeRulesetService/read",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AdaptiveAccessNodeRulesetService",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Adaptive Access Node Ruleset",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ruleid\": \"2\",\n    \"name\": \"Updated Rule Name\",\n    \"weight\": \"15\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8081/AdaptiveAccessNodeRulesetService/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8081",
+							"path": [
+								"AdaptiveAccessNodeRulesetService",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Adaptive Access Node Ruleset",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"adaptiveaccessnoderulesetid\":\"22b74a62-9726-4864-9056-c8e07665e80e\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AdaptiveAccessNodeRulesetService/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AdaptiveAccessNodeRulesetService",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Adaptive Access Node",
+			"item": [
+				{
+					"name": "Create Adaptive Access Node",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"adaptiveAccessNodeId\": \"\",\n    \"adaptiveAccessNodeType\":\"FEDERATED\",\n    \"principalTypeId\":\"c3b5828a-2ea1-4a6f-912a-f672f6ca6e62\",\n    \"authenticationprotocol\":\"OAuth 2.0\",\n    \"authenticationendpoint\":\"keycloak/auth\",\n    \"adaptiveAccessNodeName\":\"test acme federated node\",\n    \"rulesetId\": \"9630c0f8-6a5f-4611-aac7-ed4af64afb66\",\n    \"pd\": null,\n    \"ad\": null\n}\n\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AdaptiveAccessNodeService/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AdaptiveAccessNodeService",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Adaptive Access Node Ruleset",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AdaptiveAccessNodeService/read",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AdaptiveAccessNodeService",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Adaptive Access Node",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ruleid\": \"2\",\n    \"name\": \"Updated Rule Name\",\n    \"weight\": \"15\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8081/AdaptiveAccessNodeService/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8081",
+							"path": [
+								"AdaptiveAccessNodeService",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Adaptive Access Node",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"adaptiveaccessnodename\":\"test acme federated node 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AdaptiveAccessNodeService/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AdaptiveAccessNodeService",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Organization",
+			"item": [
+				{
+					"name": "Organization Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"organization\":\"\",\n    \"name\": \"vanguard\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/OrganizationService/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"OrganizationService",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Organization Read",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"vanguard\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/OrganizationService/read",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"OrganizationService",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Organization Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"organizationid\" : \"6bbdb5bc-acdd-4bf9-821a-3d0a51ecbf06\",\n    \"name\" : \"vanguard\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/OrganizationService/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"OrganizationService",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Organization Delete",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"acme\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/OrganizationService/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"OrganizationService",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PrincipalType",
+			"item": [
+				{
+					"name": "PrincipalType Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"principalTypeId\":\"\",\n    \"organizationId\":\"32c245c6-9eb0-43d7-a977-8faa536a1895\",\n    \"name\": \"User\",\n    \"metadata\":{\"name\":\"john\"}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/PrincipalTypeService/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"PrincipalTypeService",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PrincipalType Read",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/PrincipalTypeService/read",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"PrincipalTypeService",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PrincipalType Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"organizationid\" : \"6bbdb5bc-acdd-4bf9-821a-3d0a51ecbf06\",\n    \"name\" : \"vanguard\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/PrincipalTypeService/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"PrincipalTypeService",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PrincipalType Delete",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"acme\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/PrincipalTypeService/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"PrincipalTypeService",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AccessFlow",
+			"item": [
+				{
+					"name": "AccessFlow Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accessflowid\":\"\",\n    \"assetid\":\"cae9f33a-dc36-410b-8fdb-40c8dd67fa49\",\n    \"principaltypeid\":\"c3b5828a-2ea1-4a6f-912a-f672f6ca6e62\",\n    \"name\": \"Test acme accessFlow\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AccessFlowService/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AccessFlowService",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AccessFlow Read",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AccessFlowService/read",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AccessFlowService",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AccessFlow Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"organizationid\" : \"6bbdb5bc-acdd-4bf9-821a-3d0a51ecbf06\",\n    \"name\" : \"vanguard\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AccessFlowService/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AccessFlowService",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AccessFlow Delete",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accessflowid\":\"3990f2db-dd35-452a-a009-0c0500ef16fe\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AccessFlowService/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AccessFlowService",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Asset",
+			"item": [
+				{
+					"name": "Asset Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"assetid\": \"\",\n  \"name\": \"Customer Data API\",\n  \"organizationid\": \"32c245c6-9eb0-43d7-a977-8faa536a1895\",\n  \"description\": \"API providing customer data for CRM applications.\",\n  \"owner\": \"John Doe\",\n  \"status\": \"Active\",\n  \"source\": \"Internal\",\n  \"endpoint\": \"https://api.organization.com/customer-data\",\n  \"uniqueidentifier\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"assetsourceid\": \"9fd9e19c-2e5c-4ddf-af00-c3cda8c8c4ca\",\n  \"lifecyclestatus\": \"Production\",\n  \"assetlocation\": \"North America\",\n  \"assettype\": \"API\",\n  \"assetsourcetype\": \"Service\",\n  \"assetclassification\": \"Confidential\",\n  \"pd\":null,\n  \"ad\":null    \n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AssetService/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AssetService",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asset Read",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"asset_id\":\"cae9f33a-dc36-410b-8fdb-40c8dd67fa49\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AssetService/read",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AssetService",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asset Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"organizationid\" : \"6bbdb5bc-acdd-4bf9-821a-3d0a51ecbf06\",\n    \"name\" : \"vanguard\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AssetService/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AssetService",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Asset Delete",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"acme\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AssetService/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AssetService",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Add Adaptive Access Node",
+			"item": [
+				{
+					"name": "Add Adaptive Access node Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accessFlowId\": \"791b434f-843e-4bd0-b036-3cfdf9ebe5a4\",\n    \"adaptiveAccessNodeIds\": [\"aa7df90e-5b8c-4516-aaf4-1dc39cf2e1dd\"]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AddAdaptiveAccessNodeService/create",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AddAdaptiveAccessNodeService",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Adaptive Access node Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accessFlowId\":\"791b434f-843e-4bd0-b036-3cfdf9ebe5a4\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AddAdaptiveAccessNodeService/read",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AddAdaptiveAccessNodeService",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Adaptive Access node Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accessFlowId\": \"791b434f-843e-4bd0-b036-3cfdf9ebe5a4\",\n    \"adaptiveAccessNodeIds\": [\"aa7df90e-5b8c-4516-aaf4-1dc39cf2e1dd\", \"329aca59-f617-4816-8453-bcf51efda371\"]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AddAdaptiveAccessNodeService/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AddAdaptiveAccessNodeService",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Adaptive Access node Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accessFlowId\": \"791b434f-843e-4bd0-b036-3cfdf9ebe5a4\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AddAdaptiveAccessNodeService/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AddAdaptiveAccessNodeService",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RulesetNode",
+			"item": [
+				{
+					"name": "RulesetNode Transcation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/RulesetNodeService/trasaction",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"RulesetNodeService",
+								"trasaction"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AccessFlowAdaptiveAccessNode",
+			"item": [
+				{
+					"name": "AccessFlowAdaptiveAccessNode Transcation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AccessFlowAdaptiveAccessNodeService/trasaction",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AccessFlowAdaptiveAccessNodeService",
+								"trasaction"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AdaptiveAccessNodeAACRuleset",
+			"item": [
+				{
+					"name": "AdaptiveAccessNodeAACRuleset Transcation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/AdaptiveAccessNodeAACRulesetService/trasaction",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"AdaptiveAccessNodeAACRulesetService",
+								"trasaction"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,130 @@
+<h1 class="title">Flow Visualization</h1>
+<div class="container pb-4">
+   <div class="main-card mx-auto ">
+      <span style="display: flex; align-items: center;">
+         <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 font-medium" style="color: #c094d8;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+         </svg> -->
+         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 font-medium" style="color: #3F4095;">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0 0 20.25 18V6A2.25 2.25 0 0 0 18 3.75H6A2.25 2.25 0 0 0 3.75 6v12A2.25 2.25 0 0 0 6 20.25Z" />
+</svg>
+
+         <span class="text-2xl font-medium text-gray-900" style="margin-left: 8px;">Visualize Flows</span>
+         
+      </span>
+
+      <p class="text-md text-gray-600">Interactive sequence diagrams showing API interaction flows</p>
+
+
+
+      
+<!-- Dropdown -->
+<!-- Dropdown -->
+<p class="text-md text-gray-800 mt-5 mx-1 mb-1">Select Flow to Visualize</p>
+<div class="relative inline-block w-[600px]">
+  <button (click)="toggleDropdown()" 
+    class="flex justify-between items-center w-full px-4 py-2 text-white font-normal rounded-lg shadow-md hover:opacity-90" style="background-color: #30275D;">
+    <span>{{ selectedFlow?.title || 'Select Flow' }}</span>
+    <svg class="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            d="m1 1 4 4 4-4"/>
+    </svg>
+  </button>
+
+  <div *ngIf="isDropdownOpen" class="absolute mt-2 w-full bg-gray-900 rounded-xl shadow-lg border border-gray-600 z-20">
+    <ul class="max-h-60 overflow-y-auto">
+      <li *ngFor="let flow of flowSection">
+        <button (click)="selectFlow(flow)"
+          class="w-full text-left px-4 py-2 text-white hover:bg-violet-400 hover:text-violet-950 transition rounded-lg">
+          {{ flow.title }}
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- 👇 All content only if selectedFlow exists -->
+<div *ngIf="selectedFlow">
+
+  <!-- Spec-card -->
+  <div class="spec-card p-5 mt-5 mb-5" role="status" aria-live="polite">
+    <div class="spec-card__header">
+      <span class="spec-card__icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-300" >
+  <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+</svg>
+
+      </span>
+      <span class="spec-card__title text-white">{{ selectedFlow.title }}</span>
+    </div>
+    <span class="text-gray-300 mx-7">{{ selectedFlow.description }}</span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="border-b border-gray-700 mb-4 flex space-x-4">
+    <button (click)="setActiveTab('diagram')" 
+            [class.border-b-2]="activeTab==='diagram'" 
+            class="pb-2 px-3 text-gray-900 hover:text-violet-500 border-indigo-500">
+      Diagram
+    </button>
+    <button (click)="setActiveTab('script')" 
+            [class.border-b-2]="activeTab==='script'" 
+            class="pb-2 px-3 text-gray-900 hover:text-violet-500 border-indigo-500">
+      Script
+    </button>
+  </div>
+
+  <!-- Toolbar -->
+ <div *ngIf="activeTab==='diagram'" class="flex space-x-3 mb-4">
+  <!-- Theme toggle (unchanged) -->
+  <label class="relative inline-flex items-center cursor-pointer">
+    <input type="checkbox" class="sr-only peer" [checked]="theme === 'dark'" (change)="toggleTheme()">
+    <div class="w-11 h-6 bg-gray-400 peer-focus:outline-none rounded-full peer 
+                peer-checked:bg-purple-600 transition"></div>
+    <div class="absolute left-1 top-2 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition"></div>
+    <span class="ml-2 text-white">
+      <mat-icon *ngIf="theme==='dark'" style="vertical-align: middle;">dark_mode</mat-icon>
+      <mat-icon *ngIf="theme==='default'" style="vertical-align: middle; color: yellow;">light_mode</mat-icon>
+    </span>
+  </label>
+
+    <!-- Mermaid Playground -->
+  <button (click)="openInMermaidPlayground()" 
+          class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-500">
+    Open in Mermaid Playground
+  </button>
+
+  <!-- PNG Download -->
+  <button (click)="downloadPNG()" 
+          class="px-3 mx-4 py-1 rounded bg-blue-600 text-white hover:bg-blue-500">
+    Download PNG
+  </button>
+
+  <!-- CSV Download -->
+<button (click)="downloadSVG()" 
+        class="px-3 py-1 rounded bg-yellow-600 text-white hover:bg-yellow-500">
+  Download SVG
+</button>
+
+
+
+</div>
+
+
+  <!-- Diagram Container -->
+  <div *ngIf="activeTab==='diagram'" 
+       #mermaidContainer 
+       class="w-full p-4 rounded-lg shadow-lg"
+       [ngClass]="theme==='dark' ? 'bg-gray-900 text-white' : 'bg-white text-black'">
+  </div>
+
+  <!-- Script View -->
+  <div *ngIf="activeTab==='script'" 
+       class="bg-gray-900 p-4 rounded-lg shadow-lg overflow-x-auto">
+    <pre class="text-white text-sm">{{ selectedFlow.mermaidScript }}</pre>
+  </div>
+
+</div>
+
+</div>
+</div>

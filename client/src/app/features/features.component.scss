@@ -1,0 +1,36 @@
+#container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+
+  app-side-navbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000; /* ensure sidebar is above content */
+  }
+
+  #content {
+    flex-grow: 1;
+    transition: 0.3s ease-in-out;
+  }
+
+  &.isSidenavOpen {
+    app-side-navbar {
+      transform: translateX(0);
+      box-shadow: 1px 1px 1px #3f3e3e;
+    }
+
+    #content {
+      margin-left: 300px;
+    }
+  }
+}
+
+//  .container{
+//     background-color: #e9d4ff;
+//   }
+

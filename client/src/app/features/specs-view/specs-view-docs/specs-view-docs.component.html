@@ -1,0 +1,64 @@
+<div class="container bg-gray-900  text-white p-6 rounded-lg shadow-lg w-full">
+  <!-- Header -->
+  <h1 class="text-2xl font-bold">{{ apiDocs.title }}</h1>
+  <p class="text-gray-300">{{ apiDocs.description }}</p>
+
+  <span class="inline-block mt-2 px-3 py-1 text-sm bg-gray-900 rounded">
+    Version {{ apiDocs.version }}
+  </span>
+
+  <!-- Endpoints -->
+  <h2 class="text-xl font-semibold mt-6">Endpoints</h2>
+
+  <div *ngFor="let endpoint of apiDocs.endpoints; let i = index"
+       class="mt-3 border border-gray-800 rounded-md">
+    <button
+      (click)="toggleExpand(i)"
+      class="endpoint-info w-full flex items-center justify-between px-4 py-3  hover:bg-gray-700 rounded-md transition"
+    >
+      <div class="flex items-center space-x-3">
+        <span class="px-3 py-1 text-sm font-semibold rounded-xl {{ getMethodColor(endpoint.method) }}">
+          {{ endpoint.method }}
+        </span>
+        <span class="font-mono">{{ endpoint.path }}</span>
+      </div>
+      <span class="text-gray-200">{{ endpoint.description }}</span>
+
+       <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+             [ngClass]="expanded[i] ? 'rotate-90' : ''"
+             class="w-5 h-5 ml-2 transition-transform duration-300" style="color: #c094d8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+
+
+      
+    </button>
+
+    <!-- Expanded Details -->
+    <div *ngIf="expanded[i]" class="bg-gray-900 p-4 border-t border-gray-700" style="overflow: auto;">
+      <!-- Parameters -->
+      <div *ngIf="endpoint.parameters?.length">
+        <h3 class="font-semibold text-gray-300">Parameters</h3>
+        <ul class="mt-2 space-y-1">
+          <li *ngFor="let param of endpoint.parameters" class="flex justify-between text-sm text-gray-400">
+            <span class="font-mono">{{ param.name }}</span>
+            <span>{{ param.type }} <span *ngIf="param.required" class="text-red-400">(required)</span></span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Responses -->
+      <div *ngIf="endpoint.responses?.length" class="mt-4">
+        <h3 class="font-semibold text-gray-300">Responses</h3>
+        <ul class="mt-2 space-y-1">
+          <li *ngFor="let res of endpoint.responses"
+              class="flex justify-between text-sm ">
+            <span class="px-3 py-1 rounded-xl font-normal border-gray-300  {{ getStatusColor(res.code) }}">{{ res.code }}</span>
+            <span class="text-gray-400">{{ res.description }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

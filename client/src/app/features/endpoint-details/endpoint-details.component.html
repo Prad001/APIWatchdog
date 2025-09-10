@@ -1,0 +1,125 @@
+<h1 class="title">Endpoint Discovery</h1>
+<div class="container pb-4">
+   <div class="main-card mx-auto">
+      <span style="display: flex; align-items: center;">
+         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 font-medium" style="color: #3F4095;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+         </svg>
+         <span class="text-2xl font-medium" style="margin-left: 8px;">Discover Endpoints</span>
+      </span>
+      <p class="text-md text-gray-600">API endpoints discovered from your uploaded files with usage statistics</p>
+
+
+      <div class="card-container">
+         <div class="card m-4">
+             <div class="text-2xl text-white">{{ getTotalEndpoints() }}</div>
+            <h2 class="card-title  font-normal text-lg" style="color: #c5bcee;">Total Endpoints</h2>
+
+         </div>
+         <div class="card m-4">
+            <div class="text-2xl text-green-500">{{ getCountByStatus('success') }}</div>
+            <h2 class="card-title  font-normal text-lg" style="color: #c5bcee;">Healthy</h2>
+
+         </div>
+         <div class="card m-4">
+            <div class="text-2xl text-yellow-500">{{ getCountByStatus('warning') }}</div>
+            <h2 class="card-title  font-normal text-lg" style="color: #c5bcee;">Warnings</h2>
+
+         </div>
+         <div class="card m-4">
+            <div class="text-2xl text-red-500">{{ getCountByStatus('error') }}</div>
+            <h2 class="card-title  font-normal text-lg" style="color: #c5bcee">Issues</h2>
+
+         </div>
+
+      </div>
+
+      <div class="mt-5">
+         
+         <span style="display: flex; align-items: center;">
+           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mx-2" style="color: #3F4095;">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+</svg>
+
+            <span class="text-gray-800">Filter by Method:</span>
+         <span class="text-2xl font-medium" style="margin-left: 8px;">
+            <!-- From Uiverse.io by elijahgummer --> 
+<button
+  (click)="toggleMethod('ALL')" [class.active]="isSelected('ALL')"
+  class="group/button relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gray-900 backdrop-blur-md px-6 py-2 text-base font-normal text-white transition-all duration-300 ease-in-out 
+  hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/50 
+  active:scale-110 active:shadow-lg active:shadow-indigo-500/50 
+  border border-gray-700 mx-2"
+>
+  <span class="text-md">All</span>
+  <div
+    class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+  >
+    <div class="relative h-full w-10 bg-indigo-600/20"></div>
+  </div>
+</button>
+
+<button
+  (click)="toggleMethod('GET')" [class.active]="isSelected('GET')"  class="group/button relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gray-900 backdrop-blur-md px-6 py-2 text-base font-normal text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/50 border border-gray-700 mx-2"
+>
+  <span class="text-md">GET</span>
+  <div
+    class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+  >
+    <div class="relative h-full w-10 bg-indigo-600/20"></div>
+  </div>
+</button>
+
+<button
+  (click)="toggleMethod('POST')" [class.active]="isSelected('POST')"  class="group/button relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gray-900 backdrop-blur-md px-6 py-2 text-base font-normal text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/50 border border-gray-700 mx-2"
+>
+  <span class="text-md">POST</span>
+  <div
+    class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+  >
+    <div class="relative h-full w-10 bg-indigo-600/20"></div>
+  </div>
+</button>
+
+<button
+  (click)="toggleMethod('PUT')" [class.active]="isSelected('PUT')" class="group/button relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gray-900 backdrop-blur-md px-6 py-2 text-base font-normal text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/50 border border-gray-700 mx-2"
+>
+  <span class="text-md">PUT</span>
+  <div
+    class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+  >
+    <div class="relative h-full w-10 bg-indigo-600/20"></div>
+  </div>
+</button>
+<button
+  (click)="toggleMethod('DELETE')" [class.active]="isSelected('DELETE')" class="group/button relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gray-900 backdrop-blur-md px-6 py-2 text-base font-normal text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/50 border border-gray-700 mx-2"
+>
+  <span class="text-md">DELETE</span>
+  <div
+    class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+  >
+    <div class="relative h-full w-10 bg-indigo-600/20"></div>
+  </div>
+</button>
+<button
+  (click)="toggleMethod('PATCH')" [class.active]="isSelected('PATCH')" class="group/button relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gray-900 backdrop-blur-md px-6 py-2 text-base font-normal text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/50 border border-gray-700 mx-2"
+>
+  <span class="text-md">PATCH</span>
+  <div
+    class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+  >
+    <div class="relative h-full w-10 bg-indigo-600/20"></div>
+  </div>
+</button>
+
+         </span>
+      </span>
+      </div>
+
+
+      <div class="mt-4">
+         <app-endpoint-details-table [endpoints]="filteredEndpoints"></app-endpoint-details-table>
+      </div>
+
+   </div>
+</div>

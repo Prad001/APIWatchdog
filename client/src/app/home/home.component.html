@@ -1,0 +1,214 @@
+
+<div class="bg-img">
+  <!-- Top Navigation -->
+<!-- Top Navigation -->
+<header class="top-nav">
+  <!-- Logo -->
+  <div class="nav-left">
+    <img src="assets/images/logo.png" alt="logo" class="logo" />
+  </div>
+
+  <!-- Right Navigation -->
+  <div class="nav-right">
+    <a href="#" class="nav-link text-xl">Docs</a>
+    <img src="assets/images/version.png" alt="version" class="version-img" />
+  </div>
+</header>
+
+
+ 
+
+  <div class="text-center ml-auto mr-auto hero-content" >
+    <h1 class="hero-title">
+         <span style="color: #3f4095;">API</span><span style="color: #3a3a3a;" >Watchdog</span>
+    </h1>
+    <p class="hero-desc text-black"> Sniff. Decode. Secure. Your API Watchdog</p>
+  </div>
+
+  <!-- Add this below hero-content div -->
+<div class="upload-section text-center">
+  <label
+    class="drop-zone"
+    (dragover)="onDragOver($event)"
+    (drop)="onDrop($event)"
+  >
+    <input
+      type="file"
+      (change)="onFileSelected($event)"
+      class="file-input"
+      accept=".json,.har,.log,.txt"
+      hidden
+    />
+    <mat-icon class="upload_icon">upload_file</mat-icon>
+    <p>
+      Drag & drop your .json, .har, or .log file here<br />
+      or click to upload
+    </p>
+    <p *ngIf="uploadedFileName" class="mt-2 text-blue-800 font-bold">
+      Selected file: {{ uploadedFileName }}
+    </p>
+  </label>
+
+  <!-- Feedback line -->
+  <!-- <p class="upload-feedback" *ngIf="uploadedFileName">
+    ✅ Uploaded: {{ uploadedFileName }}
+  </p> -->
+</div>
+
+
+  <div class="text-center ml-auto mr-auto mt-7">
+      <!-- <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-md px-6 py-3 text-center me-3 mb-2 ">
+        Discover Endpoints</button>
+
+        <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-md px-6 py-3 text-center me-3 mb-2 ">
+        Generate Specs</button>
+
+        <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-md px-6 py-3 text-center me-3 mb-2 ">
+        Visualize Flows</button>
+
+        <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-md px-6 py-3 text-center me-3 mb-2 ">
+        Security Insights</button> -->
+
+<a  class="relative inline-block text-lg group me-3 mb-2" (click)="getDiscoverEndpoints()">
+    <span class="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-blue-800 transition-colors duration-300 ease-out border-2 border-blue-900 rounded-lg group-hover:text-white">
+        <span class="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-blue-50"></span>
+        <span class="absolute left-0 w-58 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-blue-900 group-hover:-rotate-180 ease"></span>
+        <span class="relative">Discover Endpoints</span>
+    </span>
+    <span class="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-blue-900 rounded-lg group-hover:mb-0 group-hover:mr-0" data-rounded="rounded-lg"></span>
+</a>
+
+<a  class="relative inline-block text-lg group me-3 mb-2" (click)="getGenerateSpecs()">
+    <span class="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-blue-800 transition-colors duration-300 ease-out border-2 border-blue-900 rounded-lg group-hover:text-white">
+        <span class="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-blue-50"></span>
+        <span class="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-blue-900 group-hover:-rotate-180 ease"></span>
+        <span class="relative">Generate Specs</span>
+    </span>
+    <span class="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-blue-900 rounded-lg group-hover:mb-0 group-hover:mr-0" data-rounded="rounded-lg"></span>
+</a>
+
+<a  class="relative inline-block text-lg group me-3 mb-2" (click)="getVisualizeFlows()">
+    <span class="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-blue-800 transition-colors duration-300 ease-out border-2 border-blue-900 rounded-lg group-hover:text-white">
+        <span class="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-blue-50"></span>
+        <span class="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-blue-900 group-hover:-rotate-180 ease"></span>
+        <span class="relative">Visualize Flows</span>
+    </span>
+    <span class="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-blue-900 rounded-lg group-hover:mb-0 group-hover:mr-0" data-rounded="rounded-lg"></span>
+</a>
+
+<a  class="relative inline-block text-lg group me-3 mb-2" (click)="getSecurityInsights()">
+    <span class="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-blue-800 transition-colors duration-300 ease-out border-2 border-blue-900 rounded-lg group-hover:text-white">
+        <span class="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-blue-50"></span>
+        <span class="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-blue-900 group-hover:-rotate-180 ease"></span>
+        <span class="relative">Security Insights</span>
+    </span>
+    <span class="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-blue-900 rounded-lg group-hover:mb-0 group-hover:mr-0" data-rounded="rounded-lg"></span>
+</a>
+
+
+
+  </div>
+
+  <div class="text-center ml-auto mr-auto mt-4">
+<a (click)="getFullReport()" class="inline-flex items-center justify-center h-12 px-8 py-4 font-medium tracking-wide text-white text-md transition duration-200 bg-gray-900 rounded-lg hover:bg-gray-800 focus:shadow-outline focus:outline-none">
+    Get Full Report
+</a>
+  </div>
+
+
+
+</div>
+
+
+
+<div class="flex flex-col px-8 space-y-12" style="padding: 0px 400px; margin: 100px 0px;" >
+  <!-- First Row -->
+  <div class="flex flex-row space-x-6" >
+    <!-- Card -->
+ 
+     <div class="flex-1"  >
+             <img class="pb-4" src="assets/images/card-tag-1.png" alt="">
+            <div class="card">
+               
+  <h2 class="card-title">
+    Auto-analyze API<br />
+          structure, flows &<br />
+          risks
+  </h2>
+  <p class="card-desc">
+          Upload your Postman or HAR file and let APIWatchdog instantly<br />
+          discover endpoints, generate OpenAPI specs, visualize request<br />
+          flows, and uncover potential security risks. No manual mapping,<br />
+          no guesswork — just clear, actionable insights in seconds.
+  </p>
+  <!-- <button class="card-btn">Learn More</button> -->
+   <a  class="relative inline-flex items-center justify-center p-3 px-4 py-2 overflow-hidden font-medium text-indigo-600 transition duration-300 ease-out border-2 border-blue-900 rounded-full shadow-md group">
+     <span class="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 -translate-x-full bg-blue-900 group-hover:translate-x-0 ease">
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+     </span>
+     <span class="absolute flex items-center justify-center w-full h-full text-blue-900 transition-all duration-300 transform group-hover:translate-x-full ease">Learn More</span>
+     <span class="relative invisible">Learn More</span>
+ </a>
+</div>
+
+        </div>
+
+    <!-- Image -->
+    <div class="flex-1 ">
+      <img src="assets/images/api-management.png" alt="Image 1" class="rounded-2xl mt-8" style="margin-left: auto;" />
+    </div>
+  </div>
+
+  <!-- Second Row -->
+  <div class="flex flex-row space-x-6" style="margin: 50px 0px;">
+    <!-- Image -->
+    <div class="flex-1">
+      <img src="assets/images/security-monitoring.png" alt="Image 1" class="rounded-2xl  mt-8" style="margin-right: auto;"/>
+    </div>
+
+    <!-- Card -->
+     <div class="flex-1"  >
+             <img class="pb-4" src="assets/images/card-tag-2.png" alt="">
+            <div class="card">
+               
+  <h2 class="card-title">
+    See Your API Like <br>
+    Never Before
+  </h2>
+  <p class="card-desc">
+    Turn raw API traffic into a clear, navigable map of your system.<br>
+    Color-coded endpoints by method (GET, POST, DELETE), real-time <br>
+    status checks, missing schema detection, and usage frequency tracking<br>
+    — all in one interactive dashboard. Drill down into each route to <br>
+    inspect full request/response details, and spot anomalies before <br>
+    they become problems.
+  </p>
+  <!-- <button class="card-btn">Learn More</button> -->
+   <a  class="relative inline-flex items-center justify-center p-3 px-4 py-2 overflow-hidden font-medium text-indigo-600 transition duration-300 ease-out border-2 border-blue-900 rounded-full shadow-md group">
+     <span class="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 -translate-x-full bg-blue-900 group-hover:translate-x-0 ease">
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+     </span>
+     <span class="absolute flex items-center justify-center w-full h-full text-blue-900 transition-all duration-300 transform group-hover:translate-x-full ease">Learn More</span>
+     <span class="relative invisible">Learn More</span>
+ </a>
+</div>
+
+        </div>
+  </div>
+</div>
+
+
+
+<div class="footer">
+  <div class="logos">
+    <img src="assets/images/github_logo.svg" height="30px" width="30px" alt="">
+    <img src="assets/images/linkedin_logo.svg" height="30px" width="30px" alt="">
+  </div>
+
+  <p class="copyright">© 2025 Pradeep Shelke. All rights reserved.</p>
+</div>
+
+
+
+
+    

@@ -1,0 +1,76 @@
+:host {
+  display: block;
+  width: 300px;
+  height: 100vh;
+
+ background-image: url("/assets/images/sidebar-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.container {
+  #title {
+    line-height: 1.15;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+    font-weight: 600;
+    padding-top: 40px;
+    font-size: 1.25rem;
+  }
+
+  .menu {
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 1rem;
+    padding-top: 30px;
+
+    a {
+      text-decoration: none;
+      cursor: pointer;
+      color: white;
+      padding: 8px 4px;
+      margin: 0 10px;
+     // background-color: #E0F7FA;
+
+      &:hover {
+          background-color: #594c97 ;
+        border-radius: 10px;
+        color: #C6BEED;
+        
+        i {
+          color: black;
+          text-shadow: #00000033;
+        }
+      }
+    }
+
+    i {
+      margin-left: 8px;
+      color: black;
+    }
+
+    a.active {
+      background-color: #594c97 ;
+        border-radius: 10px;
+        color: #C6BEED;
+
+      i {
+        text-shadow: #00000033;
+      }
+    }
+  }
+
+  #options {
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+    right: 10px;
+  }
+}
+
+/* rest of your styles stay the same */

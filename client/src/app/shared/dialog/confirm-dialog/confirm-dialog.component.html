@@ -1,0 +1,32 @@
+<div class="flex flex-col items-center text-center p-4">
+  <!-- ⚠️ Warning Icon -->
+  <svg xmlns="http://www.w3.org/2000/svg" 
+       fill="none" 
+       viewBox="0 0 24 24" 
+       stroke-width="1.5" 
+       stroke="currentColor" 
+       class="w-12 h-12 text-yellow-500 mb-1 mt-1">
+    <path stroke-linecap="round" 
+          stroke-linejoin="round" 
+          d="M12 9v3.75m0 3.75h.007v.008H12v-.008zM2.25 12c0-5.385 
+             4.365-9.75 9.75-9.75s9.75 4.365 
+             9.75 9.75-4.365 9.75-9.75 9.75S2.25 
+             17.385 2.25 12z" />
+  </svg>
+
+  <!-- Title -->
+  <h2 mat-dialog-title class="text-lg font-semibold text-gray-800">
+    Confirm Navigation
+  </h2>
+
+  <!-- Message -->
+  <mat-dialog-content class="text-gray-600 mt-2">
+    {{ data.message }}
+  </mat-dialog-content>
+</div>
+
+<!-- Actions -->
+<mat-dialog-actions align="end" class="px-4 pb-2">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="warn" (click)="onConfirm()">Yes</button>
+</mat-dialog-actions>

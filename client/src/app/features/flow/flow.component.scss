@@ -1,0 +1,61 @@
+
+
+.title{
+    font-size: 30px;
+    line-height: 42px;
+    font-weight: 500;
+    margin-top: 30px ;
+    margin-left: 20px;
+    color: #3F4095;
+
+}
+
+
+.spec-card__header {
+  display: flex;
+  align-items: center;   // keeps them vertically aligned
+  gap: 5px;              // spacing between icon and text
+  margin-bottom: 2px;
+}
+
+
+.spec-card{
+    background-color: #594c97;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    border: 1px solid #030303;
+    
+}
+
+// .theme-toggle {
+//   .mat-slide-toggle-thumb {
+//     position: relative;
+
+//     &::after {
+//       content: "☀️"; /* default icon (light) */
+//       position: absolute;
+//       top: 50%;
+//       left: 50%;
+//       transform: translate(-30%, -50%);
+//       font-size: 14px;
+//     }
+//   }
+
+//   &.mat-checked {
+//     .mat-slide-toggle-thumb::after {
+//       content: "🌙"; /* icon when dark mode is active */
+//     }
+//   }
+// }
+
+// .theme-toggle {
+//   display: flex;
+//   align-items: center;
+
+//   .mat-icon {
+//     font-size: 20px;
+//     margin-left: 8px;
+//   }
+// }
+

@@ -1,0 +1,18 @@
+.container{
+    background-color: #9589d8;
+}
+
+thead{
+    background-color: #30275D;
+}
+
+.main-content{
+    &:hover{
+        background-color: #877bcc;
+       
+    }
+}
+
+.expand-content{
+    background-color: #7c70be;
+}
