@@ -31,193 +31,6 @@ export class FullReportComponent implements OnInit {
 
 
   report: APIWatchdogReport | any = null;
-//   report: APIWatchdogReport = {
-//   "meta": {
-//     "title": "APIWatchdog Analysis Report",
-//     "heading": "Comprehensive API Analysis",
-//     "description": "Analysis of API endpoints, OpenAPI spec, flows, and security insights from the uploaded file.",
-//     "stats": {
-//       "totalEndpoints": 5,
-//       "totalFlows": 2,
-//       "totalIssues": 3
-//     }
-//   },
-//   "endpoints": {
-//     "title": "Discovered Endpoints",
-//     "heading": "1. Discover Endpoints",
-//     "description": "List of all API endpoints extracted from the file.",
-//     "items": [
-//       {
-//         "method": "GET",
-//         "path": "/users",
-//         "status": "success",
-//         "description": "Retrieve a list of users",
-//         "usageFrequency": 150,
-//         "requestExample": { "headers": { "Authorization": "Bearer token" } },
-//         "responseExample": { "data": [{ "id": 1, "name": "John Doe" }] }
-//       },
-//       {
-//         "method": "POST",
-//         "path": "/users",
-//         "status": "warning",
-//         "description": "Create a new user - missing validation in request",
-//         "usageFrequency": 80,
-//         "requestExample": { "body": { "name": "Jane Doe" } },
-//         "responseExample": { "id": 2, "name": "Jane Doe" }
-//       },
-//       {
-//         "method": "GET",
-//         "path": "/users/:id",
-//         "status": "success",
-//         "description": "Get user by ID",
-//         "usageFrequency": 200,
-//         "requestExample": { "params": { "id": 1 } },
-//         "responseExample": { "id": 1, "name": "John Doe" }
-//       },
-//       {
-//         "method": "PUT",
-//         "path": "/users/:id",
-//         "status": "error",
-//         "description": "Update user - insecure parameter handling",
-//         "usageFrequency": 60,
-//         "requestExample": { "body": { "name": "Updated Name" } },
-//         "responseExample": { "id": 1, "name": "Updated Name" }
-//       },
-//       {
-//         "method": "DELETE",
-//         "path": "/users/:id",
-//         "status": "warning",
-//         "description": "Delete user - no confirmation step",
-//         "usageFrequency": 40,
-//         "requestExample": { "params": { "id": 1 } },
-//         "responseExample": { "message": "User deleted" }
-//       }
-//     ]
-//   },
-//   "spec": {
-//     "title": "OpenAPI Specification",
-//     "description": "Generated OpenAPI spec based on the analyzed endpoints",
-//     "version": "1.0.0",
-//     "endpoints": [
-//       {
-//         "method": "GET",
-//         "path": "/users",
-//         "description": "Get all users",
-//         "parameters": [
-//           {
-//             "name": "limit",
-//             "type": "integer",
-//             "required": false,
-//             "description": "Number of users to return"
-//           }
-//         ],
-//         "responses": [
-//           {
-//             "code": 200,
-//             "description": "Successful response with user list"
-//           }
-//         ]
-//       },
-//       {
-//         "method": "POST",
-//         "path": "/users",
-//         "description": "Create a new user",
-//         "parameters": [],
-//         "responses": [
-//           {
-//             "code": 201,
-//             "description": "User created successfully"
-//           }
-//         ]
-//       }
-//     ],
-//     "specScript": "openapi: 3.0.0\ninfo:\n  title: User API\n  description: API for managing users\n  version: 1.0.0\npaths:\n  /users:\n    get:\n      summary: Get all users\n      parameters:\n        - name: limit\n          in: query\n          schema:\n            type: integer\n      responses:\n        '200':\n          description: OK\n    post:\n      summary: Create a user\n      requestBody:\n        required: true\n        content:\n          application/json:\n            schema:\n              $ref: '#/components/schemas/User'\n      responses:\n        '201':\n          description: Created\ncomponents:\n  schemas:\n    User:\n      type: object\n      properties:\n        id:\n          type: integer\n        name:\n          type: string"
-//   },
-//   "flows": {
-//     "title": "Sequence Flows",
-//     "heading": "3. Sequence Diagram Flows",
-//     "description": "Visualized API interaction flows using Mermaid syntax",
-//     "availableFlows": [
-//       {
-//         "id": "flow1",
-//         "title": "User Authentication Flow"
-//       },
-//       {
-//         "id": "flow2",
-//         "title": "User CRUD Flow"
-//       }
-//     ],
-//     "flows": [
-//       {
-//         "id": "flow1",
-//         "title": "User Authentication Flow",
-//         "description": "Flow for user login and token generation",
-//         "mermaidScript": "sequenceDiagram\n    participant Client\n    participant AuthAPI\n    Client->>AuthAPI: POST /login with credentials\n    AuthAPI-->>Client: 200 OK with JWT token\n    Client->>AuthAPI: GET /profile with token\n    AuthAPI-->>Client: 200 OK with user data"
-//       },
-//       {
-//         "id": "flow2",
-//         "title": "User CRUD Flow",
-//         "description": "Flow for creating, reading, updating, and deleting users",
-//         "mermaidScript": "sequenceDiagram\n    participant User\n    participant API\n    User->>API: POST /users (create)\n    API-->>User: 201 Created\n    User->>API: GET /users (list)\n    API-->>User: 200 OK\n    User->>API: PUT /users/:id (update)\n    API-->>User: 200 OK\n    User->>API: DELETE /users/:id (delete)\n    API-->>User: 200 OK"
-//       }
-//     ]
-//   },
-//   "security": {
-//     "title": "Security Insights",
-//     "heading": "4. Security Section",
-//     "description": "Security issues and recommendations identified",
-//     "issues": [
-//       {
-//         "id": "sec1",
-//         "title": "Missing Rate Limiting on /login",
-//         "description": "The /login endpoint does not implement rate limiting, making it vulnerable to brute-force attacks.",
-//         "endpoint": "/login",
-//         "severity": "High",
-//         "severityBadge": "❌",
-//         "recommendation": "Implement rate limiting to prevent abuse.",
-//         "remediationSteps": [
-//           "Add rate limiting middleware (e.g., express-rate-limit)",
-//           "Set thresholds for failed login attempts",
-//           "Monitor and alert on suspicious activity"
-//         ],
-//         "tag": "authentication",
-//         "resourceLink": "https://owasp.org/www-community/controls/Rate_Limiting"
-//       },
-//       {
-//         "id": "sec2",
-//         "title": "Insecure Direct Object Reference (IDOR) in /users/:id",
-//         "description": "The endpoint allows users to access or modify data without proper authorization checks.",
-//         "endpoint": "/users/:id",
-//         "severity": "Medium",
-//         "severityBadge": "⚠️",
-//         "recommendation": "Add authorization checks to ensure users can only access their own data.",
-//         "remediationSteps": [
-//           "Implement role-based access control (RBAC)",
-//           "Validate user permissions before processing requests",
-//           "Use UUIDs instead of sequential IDs where possible"
-//         ],
-//         "tag": "authorization",
-//         "resourceLink": "https://owasp.org/www-project-top-ten/2017/A5_2017-Broken_Access_Control"
-//       },
-//       {
-//         "id": "sec3",
-//         "title": "Sensitive Data Exposure in Responses",
-//         "description": "User responses include unnecessary sensitive information like internal IDs.",
-//         "endpoint": "/users",
-//         "severity": "Low",
-//         "severityBadge": "⚠️",
-//         "recommendation": "Sanitize responses to exclude sensitive data.",
-//         "remediationSteps": [
-//           "Use data masking or filtering in response serialization",
-//           "Review and minimize data returned in API responses",
-//           "Implement GDPR/compliance checks"
-//         ],
-//         "tag": "data_protection",
-//         "resourceLink": "https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure"
-//       }
-//     ]
-//   }
-// }
 
   // Provide a logo URL or base64 string; replace with your actual logo path or base64 data
   logoUrl = 'assets/images/logo.png'; // place your logo under assets/ or use data:image/png;base64,...
@@ -225,10 +38,8 @@ export class FullReportComponent implements OnInit {
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
-    // initialize mermaid
     mermaid.initialize({ startOnLoad: false, theme: 'default' });
 
-        // ✅ Fetch report from service
     this.apiService.getReport().subscribe({
       next: (data) => {
         this.report = data;
@@ -530,7 +341,7 @@ export class FullReportComponent implements OnInit {
 
     // Render mermaid diagrams (init parses .mermaid nodes)
     try {
-      (mermaid as any).init(undefined, container.querySelectorAll('.mermaid'));
+      (mermaid as any).init({ theme: 'default' }, container.querySelectorAll('.mermaid'));
     } catch (err) {
       console.warn('mermaid.init failed, attempting per-node render', err);
       const nodes = container.querySelectorAll('.mermaid');
@@ -571,7 +382,7 @@ export class FullReportComponent implements OnInit {
     let canvas: HTMLCanvasElement;
     try {
       canvas = await html2canvas(container, {
-        scale: 2,
+        scale: 1,
         useCORS: true,
         allowTaint: false,
         logging: true,

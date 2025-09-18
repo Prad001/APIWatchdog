@@ -40,18 +40,26 @@ ngOnInit(): void {
       this.selectedFlow = this.flowSection[0] ?? null;
 
       if (isPlatformBrowser(this.platformId)) {
-        setTimeout(() => this.renderMermaid(), 0);
+        // wait until ViewChild is available
+        setTimeout(() => {
+          if (this.mermaidContainer) {
+            this.renderMermaid();
+          }
+        }, 50);
       }
     }
   });
 }
 
 
-  ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.renderMermaid();
-    }
+
+
+ngAfterViewInit(): void {
+  if (isPlatformBrowser(this.platformId) && this.selectedFlow) {
+    this.renderMermaid();
   }
+}
+
 
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
@@ -166,7 +174,7 @@ ngOnInit(): void {
     }
     const base64 = btoa(binary);
 
-    const url = `https://mermaid.live/edit#pako:${base64}`;
+     const url = `https://www.mermaidchart.com/play?utm_source=mermaid_live_editor&utm_medium=toggle#pako:${base64}`;
     window.open(url, "_blank");
   }
 }

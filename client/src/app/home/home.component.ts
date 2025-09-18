@@ -7,6 +7,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../core/service/api.service'; // adjust path if needed
 import { SnackMessageComponent } from '../shared/snack-message/snack-message.component';
+import { RouterLink } from '@angular/router';
+import { LoadingService } from '../core/service/loading.service';
 
 @Component({
   selector: 'app-home',
@@ -17,9 +19,8 @@ import { SnackMessageComponent } from '../shared/snack-message/snack-message.com
     MatIconModule,
     CommonModule,
     NgIf,
-    MatSnackBarModule         // needed for MatSnackBar usage in standalone component
-    // the custom snack component you created
-  ],
+    MatSnackBarModule
+],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -31,7 +32,8 @@ export class HomeComponent {
     private snackBar: MatSnackBar,
     private router: Router,
     private apiService: ApiService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private loadingService: LoadingService // inject the loading service
   ) {}
 
   ngOnInit(): void {
@@ -86,33 +88,33 @@ export class HomeComponent {
       return;
     }
 
-    this.isUploading = true;
+      this.isUploading = true;
+  this.loadingService.show(); // Ensure loading service is triggered
 
     // upload to backend
     this.apiService.uploadFile(file).subscribe({
-      next: (res) => {
-        this.isUploading = false;
+        next: (res) => {
+      this.isUploading = false;
+      this.uploadedFileName = file.name;
 
-        // Show the file name ONLY after successful upload
-        this.uploadedFileName = file.name;
-
-        this.snackBar.openFromComponent(SnackMessageComponent, {
+      // ... existing success handling ...
+              this.snackBar.openFromComponent(SnackMessageComponent, {
           data: { message: `File uploaded & processed: ${file.name}`, type: 'success' },
           duration: 3000,
           verticalPosition: 'top',
           panelClass: ['snack-success']
         });
 
-        console.log('Server response:', res);
-
-        // fetch the processed report and cache it
-        this.apiService.getReport().subscribe(report => {
-          console.log('📄 Cached report:', report);
-        });
-      },
+      // fetch the processed report and cache it
+      this.apiService.getReport().subscribe(report => {
+        this.loadingService.hide(); // Hide loading when report is received
+        console.log('📄 Cached report:', report);
+      });
+    },
       error: (err) => {
         this.isUploading = false;
         this.uploadedFileName = null;
+        this.loadingService.hide(); // Hide loading on error
 
         console.error('Upload error:', err);
         this.snackBar.openFromComponent(SnackMessageComponent, {
@@ -128,6 +130,9 @@ export class HomeComponent {
       }
     });
   }
+
+
+  // In home.component.ts
 
   getFullReport() {
     this.router.navigate(['features/full-report']);

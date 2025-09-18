@@ -24,8 +24,8 @@
               {{ endpoint.method }}
             </span>
           </td>
-          <td class="px-6 py-4 text-gray-900 font-medium">{{ endpoint.path }}</td>
-          <td class="px-6 py-4 text-gray-900 ">
+          <td class="px-6 py-4 text-white font-medium">{{ endpoint.path }}</td>
+          <td class="px-6 py-4 text-white ">
             <ng-container [ngSwitch]="getStatusIcon(endpoint.status)">
               <!-- Success -->
               <svg
@@ -97,8 +97,8 @@
             </ng-container>
           </td>
 
-          <td class="px-6 py-4 text-gray-900">{{ endpoint.description }}</td>
-          <td class="px-6 py-4 text-gray-900">{{ endpoint.usageFrequency }}</td>
+          <td class="px-6 py-4 text-white">{{ endpoint.description }}</td>
+          <td class="px-6 py-4 text-white">{{ endpoint.usageFrequency }}</td>
         </tr>
 
         <!-- Expanded Row -->
@@ -106,13 +106,13 @@
           <td colspan="5" class="expand-content px-6 py-4">
             <div class="grid grid-cols-2 gap-6">
               <div>
-                <h3 class="text-sm font-semibold mb-2 text-gray-900">Sample Request</h3>
+                <h3 class="text-sm font-semibold mb-2 text-gray-200">Sample Request</h3>
                 <pre class="bg-gray-900 p-3 rounded text-xs text-green-300" style="overflow: auto;"
                   >{{ endpoint.requestExample | json }}
                 </pre>
               </div>
               <div>
-                <h3 class="text-sm font-semibold mb-2 text-gray-900">Sample Response</h3>
+                <h3 class="text-sm font-semibold mb-2 text-gray-200">Sample Response</h3>
                 <pre class="bg-gray-900 p-3 rounded text-xs text-blue-300"  style="overflow: auto;"
                   >{{ endpoint.responseExample | json }}
                 </pre>

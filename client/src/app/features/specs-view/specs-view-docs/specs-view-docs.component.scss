@@ -1,7 +1,8 @@
 .container{
-  background-color: #30275D;   
+  background-color: var(--color-secondary);   
+  overflow: auto;
 }
 
 .endpoint-info{
-  background-color: #3d3277;   
+  background-color: var(--color-secondary-alt-2);   
 }

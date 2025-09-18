@@ -1,75 +1,74 @@
 <div class="container">
-  <!-- <div id="title">Patient Management</div> -->
-    <img id="title" class="title" src="assets/images/logo.png" alt="logo" height="40px" width="150px" />
+  <!-- Close button (visible when sidebar is open) -->
+  <button
+    class="sidebar-toggle close"
+    aria-label="Close sidebar"
+    title="Hide sidebar"
+    (click)="closeSidenav()"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" style="color: var(--color-button-text-active);">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+</svg>
+
+  </button>
+
+  <img id="title" class="title" src="assets/images/logo-bg-dark.png" alt="logo" height="40px" width="150px" />
   <div class="menu">
-
-
-
     <!-- *************************Features*************************** -->
-     <a
-      (click)="setActiveLink('endpointDetails'); endpointDetails()"
-      [ngClass]="{ active: activeLink === 'endpointDetails' }"
-      ><span class="entry"
-        ><i class="fs-5 fa-solid fa-gauge" style="padding-right: 4px"></i
-        ><span>Discover Endpoints</span></span
-      ></a
-    >
+    <a (click)="setActiveLink('endpointDetails'); endpointDetails()"
+       [ngClass]="{ active: activeLink === 'endpointDetails' }">
+      <span class="entry">
+        <i class="fs-5 fa-solid fa-gauge" style="padding-right: 4px"></i>
+        <span>Discover Endpoints</span>
+      </span>
+    </a>
 
-    <a
-      (click)="setActiveLink('specsView'); specsView()"
-      [ngClass]="{ active: activeLink === 'specsView' }"
-      ><span class="entry"
-        ><i class="fs-5 fa-solid fa-clipboard-list" style="padding-right: 4px"></i
-        >
-        <span>Generate Specs</span></span
-      ></a
-    >
+    <a (click)="setActiveLink('specsView'); specsView()"
+       [ngClass]="{ active: activeLink === 'specsView' }">
+      <span class="entry">
+        <i class="fs-5 fa-solid fa-clipboard-list" style="padding-right: 4px"></i>
+        <span>Generate Specs</span>
+      </span>
+    </a>
 
+    <a (click)="setActiveLink('flow'); flow()"
+       [ngClass]="{ active: activeLink === 'flow' }">
+      <span class="entry">
+        <i class="fs-5 fa-solid fa-calendar-check" style="padding-right: 4px"></i>
+        <span>Visualize Flows</span>
+      </span>
+    </a>
 
+    <a (click)="setActiveLink('securityInsights'); securityInsights()"
+       [ngClass]="{ active: activeLink === 'securityInsights' }">
+      <span class="entry">
+        <i class="fs-5 fa-solid fa-shield-halved" style="padding-right: 4px"></i>
+        <span>Security Insight</span>
+      </span>
+    </a>
 
-    <a
-      (click)="setActiveLink('flow'); flow()"
-      [ngClass]="{ active: activeLink === 'flow' }"
-      ><span class="entry"
-        ><i class="fs-5 fa-solid fa-calendar-check" style="padding-right: 4px"></i
-        ><span>Visualize Flows</span></span
-      ></a
-    >
-
-     <a
-      (click)="setActiveLink('securityInsights'); securityInsights()"
-      [ngClass]="{ active: activeLink === 'securityInsights' }"
-      ><span class="entry"
-        ><i class="fs-5 fa-solid fa-calendar-check" style="padding-right: 4px"></i
-        ><span>Security Insight</span></span
-      ></a
-    >
-
-    <a
-      (click)="setActiveLink('fullReport'); fullReport()"
-      [ngClass]="{ active: activeLink === 'fullReport' }"
-      ><span class="entry"
-        ><i class="fs-5 fa-solid fa-calendar-check" style="padding-right: 4px"></i
-        ><span>Full Report</span></span
-      ></a
-    >
-
- 
+    <a (click)="setActiveLink('fullReport'); fullReport()"
+       [ngClass]="{ active: activeLink === 'fullReport' }">
+      <span class="entry">
+        <i class="fs-5 fa-solid fa-file-lines" style="padding-right: 4px"></i>
+        <span>Full Report</span>
+      </span>
+    </a>
   </div>
 
   <div class="menu" id="options">
-    <a>
-      <span class="entry"
-        ><i class="fs-5 fa-solid fa-circle-question"></i><span>Help</span></span
-      >
+    <a [href]="currentHelpLink" target="_blank" rel="noopener noreferrer">
+      <span class="entry">
+        <i class="fs-5 fa-solid fa-circle-question"></i>
+        <span>Help</span>
+      </span>
     </a>
 
     <a (click)="back()">
-      <span class="entry"
-        ><i class="fs-5 fa-solid fa-arrow-right-from-bracket"></i
-        ><span>Back</span></span
-      >
+      <span class="entry">
+        <i class="fs-5 fa-solid fa-arrow-right-from-bracket"></i>
+        <span>Back</span>
+      </span>
     </a>
   </div>
 </div>
-

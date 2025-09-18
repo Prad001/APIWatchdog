@@ -19,12 +19,12 @@ export class EndpointDetailsTableComponent {
 
   getMethodColor(method: string): string {
     switch (method) {
-      case 'GET': return 'bg-green-600';
-      case 'POST': return 'bg-blue-600';
-      case 'PUT': return 'bg-yellow-600';
-      case 'DELETE': return 'bg-red-600';
-      case 'PATCH': return 'bg-purple-600';
-      default: return 'bg-gray-500';
+      case 'GET': return 'bg-green-600 ';
+      case 'POST': return 'bg-blue-600 ';
+      case 'PUT': return 'bg-yellow-600 ';
+      case 'DELETE': return 'bg-red-600 ';
+      case 'PATCH': return 'bg-purple-600 ';
+      default: return 'bg-gray-500 ';
     }
   }
 

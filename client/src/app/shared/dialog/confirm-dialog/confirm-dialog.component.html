@@ -15,18 +15,29 @@
   </svg>
 
   <!-- Title -->
-  <h2 mat-dialog-title class="text-lg font-semibold text-gray-800">
-    Confirm Navigation
+  <h2 class="text-lg font-semibold text-gray-100">
+    Are You Sure?
   </h2>
 
   <!-- Message -->
-  <mat-dialog-content class="text-gray-600 mt-2">
+  <div class="text-gray-300 mt-2">
     {{ data.message }}
-  </mat-dialog-content>
+  </div>
 </div>
 
 <!-- Actions -->
-<mat-dialog-actions align="end" class="px-4 pb-2">
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="warn" (click)="onConfirm()">Yes</button>
-</mat-dialog-actions>
+<div class="flex justify-end gap-2 px-4 pb-2">
+  <button 
+    (click)="onCancel()" 
+    class="px-4 py-2 rounded-md text-white bg-gray-500 hover:bg-gray-600 transition">
+    Cancel
+  </button>
+ <button 
+  (click)="onConfirm()" 
+  class="px-4 py-2 rounded-md text-white transition hover:opacity-80"
+  style="background-color: var(--color-secondary-light);"
+>
+  Yes
+</button>
+
+</div>

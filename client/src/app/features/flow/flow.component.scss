@@ -1,12 +1,10 @@
-
-
 .title{
     font-size: 30px;
     line-height: 42px;
     font-weight: 500;
     margin-top: 30px ;
     margin-left: 20px;
-    color: #3F4095;
+    color: var(--color-primary);
 
 }
 
@@ -20,42 +18,54 @@
 
 
 .spec-card{
-    background-color: #594c97;
+    background-color: var(--color-secondary-light);
     border-radius: 10px;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    border: 1px solid #030303;
+    box-shadow: 0 4px 8px var(--shadow-black-40);
+    border: 1px solid var(--color-border-dark);
     
 }
 
-// .theme-toggle {
-//   .mat-slide-toggle-thumb {
-//     position: relative;
 
-//     &::after {
-//       content: "☀️"; /* default icon (light) */
-//       position: absolute;
-//       top: 50%;
-//       left: 50%;
-//       transform: translate(-30%, -50%);
-//       font-size: 14px;
-//     }
-//   }
+@media (max-width: 430px) {
+  /* Dropdown */
+  .container .relative {
+    width: 100% !important;       /* override fixed 600px */
+    max-width: 100%;
+  }
 
-//   &.mat-checked {
-//     .mat-slide-toggle-thumb::after {
-//       content: "🌙"; /* icon when dark mode is active */
-//     }
-//   }
-// }
+  .container button {
+    font-size: 14px;              /* slightly smaller text */
+  }
 
-// .theme-toggle {
-//   display: flex;
-//   align-items: center;
+  /* Dropdown button */
+  .container .relative > button {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
 
-//   .mat-icon {
-//     font-size: 20px;
-//     margin-left: 8px;
-//   }
-// }
+  /* Toolbar (toggle + buttons) */
+  .container .flex.space-x-3 {
+    flex-direction: column;       /* stack vertically */
+    align-items: stretch;         /* full width */
+    gap: 10px;                    /* spacing between buttons */
+  }
+
+  .container .flex.space-x-3 button {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Toggle alignment */
+  .container .flex.space-x-3 label {
+    justify-content: left;      /* center toggle on mobile */
+    width: 100%;
+  }
+
+  .toggle-circle{
+    top: calc(5px);
+  }
+}
+
+
 

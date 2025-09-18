@@ -2,20 +2,58 @@
   display: block;
   width: 300px;
   height: 100vh;
-
- background-image: url("/assets/images/sidebar-bg.png");
+  background-image: url("/assets/images/sidebar-bg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
 }
 
+/* small reusable toggle styles */
+.sidebar-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255,255,255,0.06);
+  border: none;
+  padding: 4px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.16);
+
+  i {
+    font-size: 14px;
+    color: var(--overlay-white-90);
+    transform: translateX(0);
+    transition: transform 0.18s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.12);
+
+    i {
+      transform: translateX(-2px);
+    }
+  }
+}
+
+/* container inner layout */
 .container {
+  padding-top: 8px;
+
   #title {
     line-height: 1.15;
     text-align: center;
     margin-left: auto;
     margin-right: auto;
-    color: white;
+    color: var(--overlay-white-90);
     font-weight: 600;
     padding-top: 40px;
     font-size: 1.25rem;
@@ -32,18 +70,20 @@
     a {
       text-decoration: none;
       cursor: pointer;
-      color: white;
-      padding: 8px 4px;
+      color: var(--overlay-white-90);
+      padding: 8px 12px;
       margin: 0 10px;
-     // background-color: #E0F7FA;
+      border-radius: 10px;
+      transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease;
+      display: block;
 
       &:hover {
-          background-color: #594c97 ;
-        border-radius: 10px;
-        color: #C6BEED;
-        
+        background-color: var(--color-secondary-light);
+        color: var(--color-main-card-bg);
+        transform: translateX(4px);
+
         i {
-          color: black;
+          color: var(--shadow-black-10);
           text-shadow: #00000033;
         }
       }
@@ -51,16 +91,16 @@
 
     i {
       margin-left: 8px;
-      color: black;
+      color: var(--shadow-black-10);
     }
 
     a.active {
-      background-color: #594c97 ;
-        border-radius: 10px;
-        color: #C6BEED;
+      background-color: var(--color-secondary-light);
+      border-radius: 10px;
+      color: #C6BEED;
 
       i {
-        text-shadow: #00000033;
+        text-shadow: var(--shadow-black-10);
       }
     }
   }
@@ -73,4 +113,13 @@
   }
 }
 
-/* rest of your styles stay the same */
+/* Responsive & visual polish */
+@media (max-width: 900px) {
+  :host {
+    width: 260px;
+  }
+  .sidebar-toggle {
+    padding: 6px;
+    i { font-size: 12px; }
+  }
+}

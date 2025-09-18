@@ -6,31 +6,87 @@ html, body { height: 100%;}
 
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+/* ==============================
+   🎨 Global Color Variables
+   ============================== */
+:root {
+  /* Grayscale */
+  --color-black: #000000;
+  --color-dark: #1a1a1a;
+  --color-mid-dark: #3a3a3a;
+  --color-mid: #555555;
+  --color-gray: #666666;
+  --color-light-gray: #9e9e9e;
+
+  /* Brand Colors */
+  --color-primary: #3f4095;
+  --color-primary-light: #6866c8;
+  --color-primary-alt: #9d94c4;
+  --color-secondary: #30275d;
+  --color-secondary-light: #594c97;
+  --color-secondary-alt: #3c3074;
+  --color-secondary-alt-2: #3d3277;
+
+  /* UI Colors */
+  --color-border-dark: #030303;
+  --color-border-blue: #6b9df8;
+  --color-card-bg: #542766;
+  --color-success: #00e676;
+
+
+  /* Backgrounds */
+  --color-footer-bg: #2d2e72;
+  --color-footer-text: #c1bde9;
+  --color-main-card-bg: #c5bcee;
+  --color-main-bg: #E6E3F4;
+
+  /* Typography */
+  --color-card-title: #1a1a1a;
+  --color-card-desc: #555555;
+  --color-button-text-active: #b7ade7;
+
+  /* Shadows & Transparencies */
+  --shadow-black-10: rgba(0, 0, 0, 0.1);
+  --shadow-black-30: rgba(0, 0, 0, 0.3);
+  --shadow-black-40: rgba(0, 0, 0, 0.4);
+  --shadow-blue-60: rgba(63, 64, 149, 0.6);
+  --shadow-blue-40: rgba(63, 64, 149, 0.4);
+  --shadow-indigo: rgba(97, 95, 255, 0.7);
+
+  /* Overlays */
+  --overlay-white-15: rgba(255, 255, 255, 0.15);
+  --overlay-white-25: rgba(255, 255, 255, 0.25);
+  --overlay-white-80: rgba(255, 255, 255, 0.8);
+  --overlay-white-90: rgba(255, 255, 255, 0.9);
+
+  /* Progress Indicators */
+  --progress-primary: #a197cf;
+  --progress-primary-light: #e2e8f0;
+}
 
 
 .main-card {
     max-width: 1400px;
-
-    background:#c5bcee;
+    width: 1400px;
+    background:#bbb1e7;
     border-radius: 10px;
     padding: 30px;
 
     margin-top: 10px;
-    
-    // header{
-    //     font-size: 34px;
-    //     line-height: 34px;
-    //     font-weight: 600;
-    //     color: #232836;
-    //     text-align: center;
-    //     margin-bottom: 16px;
+}
 
-    // }
+@media (max-width: 640px) {
+  .main-card {
+      width: 600px;
+  }
 
-    // .inner {
-    //     max-width: 1200px;
-    //     margin: auto auto;
-    // }
+}
+
+@media (max-width: 430px) {
+  .main-card {
+      width: 380px;
+  }
+
 }
 
 
@@ -65,5 +121,29 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 body.features-bg {
-  background-color: #E6E3F4 !important;
+  background-color: var(--color-main-bg) !important;
 }
+
+
+/* styles.scss */
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: var(--progress-primary) !important;
+}
+
+.mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: var(--progress-primary) !important;
+}
+
+/* Progress bar */
+.mat-mdc-progress-bar {
+  --mdc-linear-progress-active-indicator-color: var(--progress-primary) !important;
+  --mdc-linear-progress-track-color: var(--progress-primary-light) !important; /* optional, light gray background */
+}
+
+/* styles.scss */
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 10px !important; /* reduce radius */
+}
+
+
+

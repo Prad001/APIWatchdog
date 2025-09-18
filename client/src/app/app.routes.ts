@@ -7,9 +7,11 @@ import { FlowComponent } from './features/flow/flow.component';
 import { SecurityInsightsComponent } from './features/security-insights/security-insights.component';
 import { SpecsViewComponent } from './features/specs-view/specs-view.component';
 import { ReportGuard } from './core/guard/report.guard';
+// import { DocsComponent } from './docs/docs.component';
 
 export const routes: Routes = [
      {path: '',component:HomeComponent},
+    //  { path: 'docs', component:  DocsComponent  },
      {
     path: 'features',
     component: FeaturesComponent,
@@ -21,7 +23,8 @@ export const routes: Routes = [
       { path: 'endpoint-details', component: EndpointDetailsComponent },
       { path: 'specs-view', component:  SpecsViewComponent   },
       { path: 'flow', component: FlowComponent   },
-      { path: 'security-insights', component:  SecurityInsightsComponent  }
+      { path: 'security-insights', component:  SecurityInsightsComponent  },
+       
     ]
   }
 ];

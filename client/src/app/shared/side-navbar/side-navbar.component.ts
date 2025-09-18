@@ -20,6 +20,15 @@ export class SideNavbarComponent {
   isTitle: string = '';
   private routerSubscription: Subscription = new Subscription();
 
+helpLinks: { [key: string]: string } = {
+  endpointDetails: 'http://localhost:4321/docs/discover-endpoints/',
+  specsView: 'http://localhost:4321/docs/generate-specs/',
+  flow: 'http://localhost:4321/docs/visualize-flows/',
+  securityInsights: 'http://localhost:4321/docs/security-analysis/',
+  fullReport: 'http://localhost:4321/docs/full-report/'
+};
+
+
   constructor(private router: Router, private apiService: ApiService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
@@ -81,6 +90,12 @@ export class SideNavbarComponent {
   setActiveLink(link: string): void {
     this.activeLink = link;
   }
+
+get currentHelpLink(): string {
+  return this.helpLinks[this.activeLink] || 'http://localhost:4321/guides/getting-started/';
+}
+
+
 
   // isUserDropdownOpen: boolean = false;
 

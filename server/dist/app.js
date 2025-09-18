@@ -7,6 +7,8 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
+const node_cron_1 = __importDefault(require("node-cron"));
+const fs_1 = __importDefault(require("fs"));
 const upload_js_1 = __importDefault(require("./routes/upload/upload.js"));
 const report_js_1 = __importDefault(require("./routes/reports/report.js"));
 const app = (0, express_1.default)();
@@ -34,6 +36,27 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 app.use("/api/upload", upload_js_1.default);
 app.use("/api/report", report_js_1.default);
+// ----------- CLEANUP JOB FOR UPLOADS ------------
+const UPLOADS_DIR = path_1.default.join(process.cwd(), "uploads");
+// Run every hour: delete files older than 1 hour
+node_cron_1.default.schedule("0 * * * *", () => {
+    fs_1.default.readdir(UPLOADS_DIR, (err, files) => {
+        if (err)
+            return;
+        files.forEach((file) => {
+            const filePath = path_1.default.join(UPLOADS_DIR, file);
+            fs_1.default.stat(filePath, (err, stats) => {
+                if (err)
+                    return;
+                const oneHourAgo = Date.now() - 60 * 60 * 1000;
+                if (stats.mtimeMs < oneHourAgo) {
+                    fs_1.default.unlink(filePath, () => { });
+                }
+            });
+        });
+    });
+});
+// -----------------------------------------------
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
     // err.status = 404;
@@ -41,10 +64,8 @@ app.use(function (req, res, next) {
 });
 // error handler
 app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
-    // render the error page
     res.status(err.status || 500);
     res.json({});
 });

@@ -19,13 +19,13 @@ export class SecurityIssueCardsComponent {
   get severityColor(): string {
     switch (this.issue.severity) {
       case 'High':
-        return 'bg-red-600 text-white';
+        return 'bg-red-600 text-gray-900';
       case 'Medium':
-        return 'bg-yellow-500 text-white';
+        return 'bg-yellow-500 text-gray-900';
       case 'Low':
-        return 'bg-blue-600 text-white';
+        return 'bg-blue-600 text-gray-900';
       default:
-        return 'bg-gray-400 text-white';
+        return 'bg-gray-400 text-gray-900';
     }
   }
   
