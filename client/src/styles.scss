@@ -22,6 +22,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   --color-primary: #3f4095;
   --color-primary-light: #6866c8;
   --color-primary-alt: #9d94c4;
+  --color-primary-alt-2: #b3aadf;
   --color-secondary: #30275d;
   --color-secondary-light: #594c97;
   --color-secondary-alt: #3c3074;
@@ -68,7 +69,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .main-card {
     max-width: 1400px;
     width: 1400px;
-    background:#bbb1e7;
+    background:var(--color-primary-alt-2);
     border-radius: 10px;
     padding: 30px;
 

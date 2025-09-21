@@ -1,11 +1,13 @@
-// server/src/routes/upload/upload.ts
+
 import express, { Request, Response } from "express";
 import multer from "multer";
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import axios from "axios";
 import dotenv from "dotenv";
 import crypto from "crypto";
+import rateLimit from "express-rate-limit";
+import LRUCache from "lru-cache";
 
 dotenv.config({ path: "./.env" });
 
@@ -15,46 +17,47 @@ if (!apiKey) {
 }
 
 const router = express.Router();
-const upload = multer({ dest: "uploads/" });
 
-// cache keyed by file hash
-const reportCache: Map<string, any> = new Map();
-const MAX_CACHE_SIZE = 50;
-let lastReport: any = null;
+// -------------------- CONFIG --------------------
+const upload = multer({
+  dest: "uploads/",
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
+  fileFilter: (_req, file, cb) => {
+    const allowed = [".json", ".har", ".log"];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowed.includes(ext)) cb(null, true);
+    else cb(new Error("Only .json, .har, .log files allowed"));
+  },
+});
 
-function addToCache(hash: string, report: any) {
-  if (reportCache.size >= MAX_CACHE_SIZE) {
-    // delete the oldest inserted item (FIFO)
-    const firstKey = reportCache.keys().next().value as string | undefined;
-    if (firstKey !== undefined) {
-      reportCache.delete(firstKey);
-    }
-  }
-  reportCache.set(hash, report);
-}
+// Rate limiting to prevent abuse
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // max 30 requests/minute per IP
+  message: { error: "Too many requests, please try again later." },
+});
+router.use(limiter);
 
-export function getLastReport() {
-  return lastReport;
-}
+// LRU cache for previously processed files
+const reportCache = new LRUCache<string, any>({
+  max: 50,
+  ttl: 1000 * 60 * 60, // 1 hour TTL
+});
 
-// helper: compute SHA256 of file content
-function fileHash(content: string) {
-  return crypto.createHash("sha256").update(content).digest("hex");
-}
+// Keep track of last report (for getLastReport)
+let lastReport: any | null = null;
 
-// helper: chunk large content
-function chunkContent(content: string, size = 4000): string[] {
+// -------------------- HELPERS --------------------
+const fileHash = (content: string) =>
+  crypto.createHash("sha256").update(content).digest("hex");
+
+const chunkContent = (content: string, size = 4000) => {
   const chunks: string[] = [];
-  for (let i = 0; i < content.length; i += size) {
+  for (let i = 0; i < content.length; i += size)
     chunks.push(content.slice(i, i + size));
-  }
   return chunks;
-}
+};
 
-/**
- * Robustly extract the first balanced JSON object from a string.
- * This parser respects quoted strings and escaped quotes so braces inside strings are ignored.
- */
 function extractFirstJsonObject(raw: string): string | null {
   if (!raw) return null;
 
@@ -110,67 +113,57 @@ function extractFirstJsonObject(raw: string): string | null {
   return null;
 }
 
-/**
- * Safe parse with extra cleaning attempts.
- */
-function safeParseJsonFromAiResponse(rawContent: string): any {
-  if (!rawContent) return null;
 
-  // Quick strip of code fences
-  let cleaned = rawContent.replace(/```(?:json)?/gi, "").replace(/```/g, "").trim();
-
-  // Try direct parse first (fast path)
+function safeParseJson(raw: string): any {
+  if (!raw) return null;
   try {
-    return JSON.parse(cleaned);
-  } catch (e) {
-    // Try extracting first balanced JSON object
-    const extracted = extractFirstJsonObject(rawContent);
-    if (extracted) {
-      try {
-        return JSON.parse(extracted);
-      } catch (err) {
-        // as a last resort try a loose regex fallback to extract {...}
-        const regexMatch = rawContent.match(/\{[\s\S]*\}/);
-        if (regexMatch) {
-          try {
-            return JSON.parse(regexMatch[0]);
-          } catch (err2) {
-            // Give up below
-            return null;
-          }
-        }
-        return null;
-      }
+    return JSON.parse(raw);
+  } catch {
+    const extracted = extractFirstJsonObject(raw);
+    if (!extracted) return null;
+    try {
+      return JSON.parse(extracted);
+    } catch {
+      return null;
     }
-    // No extraction possible
-    return null;
   }
 }
 
-router.post("/", upload.single("file"), async (req: Request, res: Response): Promise<void> => {
-  try {
-    if (!req.file) {
-      res.status(400).json({ error: "No file uploaded" });
-      return;
-    }
+const asyncHandler =
+  (fn: any) => (req: Request, res: Response, next: any) =>
+    Promise.resolve(fn(req, res, next)).catch(next);
+
+// -------------------- ROUTE --------------------
+router.post(
+  "/",
+  upload.single("file"), // ✅ added multer here
+  asyncHandler(async (req: Request, res: Response) => {
+    if (!req.file)
+      return res.status(400).json({ error: "No file uploaded" });
 
     const filePath = req.file.path;
-    const content = fs.readFileSync(filePath, "utf-8");
-    const hash = fileHash(content);
+    try {
+      const content = await fs.readFile(filePath, "utf-8");
+      const hash = fileHash(content);
 
-    // Return cached report if file was analyzed before
-    if (reportCache.has(hash)) {
-      res.json({ success: true, report: reportCache.get(hash), cached: true });
-      return;
-    }
+      // Return cached report if available
+      if (reportCache.has(hash)) {
+        lastReport = reportCache.get(hash); // ✅ update lastReport
+        return res.json({
+          success: true,
+          report: lastReport,
+          cached: true,
+        });
+      }
 
-    // Chunk content instead of slicing 5000 chars
-    const chunks = chunkContent(content, 20000);
-    const limitedContent = chunks.slice(0, 6).join("\n---CHUNK SPLIT---\n");
+      // Chunk content (limit 7 chunks)
+      const chunks = chunkContent(content, 20000).slice(0, 6);
+      const limitedContent = chunks.join("\n---CHUNK SPLIT---\n");
 
-       const aiPrompt = `
+      const aiPrompt = `
 You are an AI assistant specialized in API analysis. Your task is to analyze the provided file content, which is expected to be from a .har, .json, or .log file containing API-related data.
-**Important:** Return only JSON—either the full report or an error object—with no additional text.
+IMPORTANT: Output ONLY a single valid JSON object. No text, no markdown fences, no explanations and not forget to add mermaid scripts.
+If you cannot produce valid JSON, return: {"error":"Unable to generate report"}.
 **Instructions:**
 
 1. **Check Content Validity:**  
@@ -184,19 +177,17 @@ You are an AI assistant specialized in API analysis. Your task is to analyze the
      - Identify sequence flows (matching FlowItem).  
      - Provide security insights (matching SecurityIssue).  
    - Return the output strictly as a JSON object that conforms to the APIWatchdogReport interface defined below.
+   - For ReportStats, ensure totalEndpoints, totalFlows, and totalIssues accurately reflect the counts in your extracted data.
 
 3. **Normalization notes:**
    - Replace every ID-like segment with {id}. If multiple id-like segments exist, replace each with {id} (e.g., /a/123/b/456 -> /a/{id}/b/{id}).
    - Preserve query parameters; do not convert them to path params.
    - For mixed-case path inconsistencies, choose a consistent lowercase form for spec paths but include a security.issues entry warning about mixed-case paths.
+   - Endpoints should be conistent fot endpoints, specs, security issues and ReportStats.
 
-**Full TypeScript Interface Definition for APIWatchdogReport:**
+**Importnt Note: Every information should be consistent throughout each section**
 
 \`\`\`typescript
-/**
- * APIWatchdogReport model for backend (Express + TypeScript)
- * Defines the structure of the JSON payload sent to the client.
- */
 
 /**
  * Top-level APIWatchdog report
@@ -213,10 +204,10 @@ export interface APIWatchdogReport {
  * Overall report metadata
  */
 export interface ReportMeta {
-  title: string;        // e.g. "APIWatchdog Analysis Report"
-  heading: string;      // e.g. "Comprehensive API Analysis"
-  description: string;  // High-level summary
-  stats: ReportStats;   // counts for quick overview
+  title: string;       
+  heading: string;      
+  description: string;  
+  stats: ReportStats;   
 }
 
 export interface ReportStats {
@@ -229,9 +220,9 @@ export interface ReportStats {
  * Common header for each report section
  */
 export interface SectionHeader {
-  title: string;        // e.g. "Discovered Endpoints"
-  heading: string;      // e.g. "1. Discover Endpoints"
-  description: string;  // Short note about this section
+  title: string;
+  heading: string;
+  description: string;
 }
 
 /**
@@ -245,11 +236,11 @@ export interface EndpointsSection extends SectionHeader {
  * Represents a single API endpoint
  */
 export interface EndpointItem {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';          // HTTP method, e.g. "GET"
-  path: string;              // URL path, e.g. "/users/:id"
-  status: 'success' | 'warning' | 'error';          // e.g. "✅", "❗Missing schema"
-  description?: string;      // Optional descriptive text
-  usageFrequency?: number;   // Optional usage count
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  path: string;
+  status: 'success' | 'warning' | 'error';
+  description?: string;
+  usageFrequency?: number;
   requestExample?: object;
   responseExample?: object;
 }
@@ -302,10 +293,10 @@ export interface FlowOverview {
  * Single sequence flow item
  */
 export interface FlowItem {
-  id: string;            // Unique flow ID
-  title: string;         // e.g. "User Login Flow"
-  description?: string;  // Optional summary
-  mermaidScript: string; // Raw Mermaid script
+  id: string;
+  title: string;
+  description?: string;
+  mermaidScript: string;
 }
 
 /**
@@ -315,24 +306,20 @@ export interface SecuritySection extends SectionHeader {
   issues: SecurityIssue[];
 }
 
-/**
- * Single security issue
- */
+
 export interface SecurityIssue {
-  id: string;            // Unique issue ID
-  title: string;         // e.g. "No rate limiting"
-  description: string;   // Explanation of issue
-  endpoint: string;      // Affected endpoint path
+  id: string;
+  title: string;
+  description: string;
+  endpoint: string;
   severity: 'High' | 'Medium' | 'Low';
-  severityBadge?: string;   // e.g. "❌", "⚠️"
+  severityBadge?: string;
   recommendation: string;
   remediationSteps:string[];
   tag:string;
-  resourceLink?: string;     // Link to best-practice or OWASP doc
+  resourceLink?: string;
 }
 \`\`\`
-
-**Content to Analyze (chunked, up to 6 chunks):**
 \`\`\`
 ${limitedContent}
 \`\`\`
@@ -340,81 +327,85 @@ ${limitedContent}
 
 `;
 
-    // send request to OpenRouter / model
-    const aiResponse = await axios.post(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        model: "deepseek/deepseek-chat-v3.1:free",
-        messages: [{ role: "user", content: aiPrompt }],
-        temperature: 0,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        timeout: 120000, // 120s in case the model takes time
-      }
-    );
+      // Async AI call
+const aiResponse = await axios.post(
+  "https://openrouter.ai/api/v1/chat/completions",
+  {
+    model: "x-ai/grok-4-fast:free",
+    messages: [
+      { role: "user", content: aiPrompt }
+    ],
+    temperature: 0,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
+    verbosity: "high",
+     reasoning: {
 
-    // Pull possible locations for the model text
-    const choices = aiResponse?.data?.choices;
-    if (!choices || choices.length === 0) {
-      console.error("AI response has no choices:", aiResponse?.data);
-      res.status(502).json({ error: "Empty AI response" });
-      return;
-    }
+      effort: 'high'
 
-    // Try different places the model might place the content
-    let rawContent: string | undefined;
-    // openrouter style: choices[0].message.content
-    rawContent = choices[0]?.message?.content ?? choices[0]?.message?.content?.toString();
-    // fallback: choices[0].text
-    if (!rawContent && choices[0]?.text) rawContent = choices[0].text;
-    // fallback: choices[0].delta?.content (streaming style)
-    if (!rawContent && choices[0]?.delta?.content) rawContent = choices[0].delta.content;
-    // If still not present, as a last fallback stringify the entire response body
-    if (!rawContent) rawContent = JSON.stringify(aiResponse.data);
-
-    // Try to sanitize and parse JSON robustly
-    const parsedReport = safeParseJsonFromAiResponse(rawContent);
-
-    if (!parsedReport) {
-      // Write a small debug snippet to disk for inspection (do not dump huge outputs)
-      try {
-        const dbgPath = path.join(process.cwd(), "ai_response_debug_snippet.txt");
-        const snippet = rawContent.slice(0, 20000); // first 20k chars
-        fs.writeFileSync(dbgPath, snippet, { encoding: "utf-8" });
-        console.error(`Failed to parse JSON from AI response. Debug snippet written to ${dbgPath}`);
-      } catch (fsErr) {
-        console.error("Failed to write debug snippet:", fsErr);
-      }
-      console.error("❌ Failed to parse AI JSON. Raw content preview:", rawContent.slice(0, 500));
-      res.status(500).json({ error: "Invalid AI response - unable to extract JSON. A debug snippet was saved on server." });
-      return;
-    }
-
-    // At this point parsedReport is an object
-    lastReport = parsedReport;
-    addToCache(hash, parsedReport);
-    res.json({ success: true, report: parsedReport });
-  } catch (err: any) {
-    console.error("Processing failed:", err?.message ?? err);
-    res.status(500).json({ error: "Processing failed", detail: err?.message ?? String(err) });
-  } finally {
-    // optionally remove uploaded file to avoid disk growth
-    try {
-      if (req.file && req.file.path) {
-        fs.unlink(req.file.path, () => {});
-      }
-    } catch (e) {
-      // ignore
-    }
+    },
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
   }
-});
+);
+
+
+      const rawContent =
+        aiResponse?.data?.choices?.[0]?.message?.content ??
+        aiResponse?.data?.choices?.[0]?.text ??
+        JSON.stringify(aiResponse.data);
+
+      const parsedReport = safeParseJson(rawContent);
+
+      if (!parsedReport) {
+        console.error("Failed to parse AI response");
+        return res.status(502).json({
+          error: "Invalid AI response",
+          message:
+            "Unable to extract JSON from AI. Ensure file contains valid API data.",
+        });
+      }
+
+      // Cache + save last report
+      reportCache.set(hash, parsedReport);
+      lastReport = parsedReport;
+
+      return res.json({
+        success: true,
+        report: parsedReport,
+        cached: false,
+      });
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
+    console.error("Axios error:", {
+      status: err.response?.status,
+      data: err.response?.data,
+      headers: err.response?.headers,
+    });
+  } else {
+    console.error("Unknown error:", err);
+  }
+  return res.status(500).json({
+    error: "Processing failed",
+    detail: err.message ?? String(err),
+  });
+    } finally {
+      try {
+        if (req.file?.path) await fs.unlink(req.file.path);
+      } catch { }
+    }
+  })
+);
+
+// -------------------- EXPORTS --------------------
+export function getLastReport() {
+  return lastReport;
+}
 
 export default router;
 

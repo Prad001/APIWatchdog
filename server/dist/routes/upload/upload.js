@@ -13,54 +13,56 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLastReport = getLastReport;
-// server/src/routes/upload/upload.ts
 const express_1 = __importDefault(require("express"));
 const multer_1 = __importDefault(require("multer"));
-const fs_1 = __importDefault(require("fs"));
+const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
 const axios_1 = __importDefault(require("axios"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const crypto_1 = __importDefault(require("crypto"));
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+const lru_cache_1 = __importDefault(require("lru-cache"));
 dotenv_1.default.config({ path: "./.env" });
 const apiKey = process.env.OPENROUTER_API_KEY;
 if (!apiKey) {
     console.warn("OPENROUTER_API_KEY is not set in .env");
 }
 const router = express_1.default.Router();
-const upload = (0, multer_1.default)({ dest: "uploads/" });
-// cache keyed by file hash
-const reportCache = new Map();
-const MAX_CACHE_SIZE = 50;
+// -------------------- CONFIG --------------------
+const upload = (0, multer_1.default)({
+    dest: "uploads/",
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
+    fileFilter: (_req, file, cb) => {
+        const allowed = [".json", ".har", ".log"];
+        const ext = path_1.default.extname(file.originalname).toLowerCase();
+        if (allowed.includes(ext))
+            cb(null, true);
+        else
+            cb(new Error("Only .json, .har, .log files allowed"));
+    },
+});
+// Rate limiting to prevent abuse
+const limiter = (0, express_rate_limit_1.default)({
+    windowMs: 60 * 1000, // 1 minute
+    max: 10, // max 30 requests/minute per IP
+    message: { error: "Too many requests, please try again later." },
+});
+router.use(limiter);
+// LRU cache for previously processed files
+const reportCache = new lru_cache_1.default({
+    max: 50,
+    ttl: 1000 * 60 * 60, // 1 hour TTL
+});
+// Keep track of last report (for getLastReport)
 let lastReport = null;
-function addToCache(hash, report) {
-    if (reportCache.size >= MAX_CACHE_SIZE) {
-        // delete the oldest inserted item (FIFO)
-        const firstKey = reportCache.keys().next().value;
-        if (firstKey !== undefined) {
-            reportCache.delete(firstKey);
-        }
-    }
-    reportCache.set(hash, report);
-}
-function getLastReport() {
-    return lastReport;
-}
-// helper: compute SHA256 of file content
-function fileHash(content) {
-    return crypto_1.default.createHash("sha256").update(content).digest("hex");
-}
-// helper: chunk large content
-function chunkContent(content, size = 4000) {
+// -------------------- HELPERS --------------------
+const fileHash = (content) => crypto_1.default.createHash("sha256").update(content).digest("hex");
+const chunkContent = (content, size = 4000) => {
     const chunks = [];
-    for (let i = 0; i < content.length; i += size) {
+    for (let i = 0; i < content.length; i += size)
         chunks.push(content.slice(i, i + size));
-    }
     return chunks;
-}
-/**
- * Robustly extract the first balanced JSON object from a string.
- * This parser respects quoted strings and escaped quotes so braces inside strings are ignored.
- */
+};
 function extractFirstJsonObject(raw) {
     if (!raw)
         return null;
@@ -113,65 +115,51 @@ function extractFirstJsonObject(raw) {
     // if we reach here we didn't find balanced braces
     return null;
 }
-/**
- * Safe parse with extra cleaning attempts.
- */
-function safeParseJsonFromAiResponse(rawContent) {
-    if (!rawContent)
+function safeParseJson(raw) {
+    if (!raw)
         return null;
-    // Quick strip of code fences
-    let cleaned = rawContent.replace(/```(?:json)?/gi, "").replace(/```/g, "").trim();
-    // Try direct parse first (fast path)
     try {
-        return JSON.parse(cleaned);
+        return JSON.parse(raw);
     }
-    catch (e) {
-        // Try extracting first balanced JSON object
-        const extracted = extractFirstJsonObject(rawContent);
-        if (extracted) {
-            try {
-                return JSON.parse(extracted);
-            }
-            catch (err) {
-                // as a last resort try a loose regex fallback to extract {...}
-                const regexMatch = rawContent.match(/\{[\s\S]*\}/);
-                if (regexMatch) {
-                    try {
-                        return JSON.parse(regexMatch[0]);
-                    }
-                    catch (err2) {
-                        // Give up below
-                        return null;
-                    }
-                }
-                return null;
-            }
+    catch (_a) {
+        const extracted = extractFirstJsonObject(raw);
+        if (!extracted)
+            return null;
+        try {
+            return JSON.parse(extracted);
         }
-        // No extraction possible
-        return null;
+        catch (_b) {
+            return null;
+        }
     }
 }
-router.post("/", upload.single("file"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+const asyncHandler = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+// -------------------- ROUTE --------------------
+router.post("/", upload.single("file"), // ✅ added multer here
+asyncHandler((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+    if (!req.file)
+        return res.status(400).json({ error: "No file uploaded" });
+    const filePath = req.file.path;
     try {
-        if (!req.file) {
-            res.status(400).json({ error: "No file uploaded" });
-            return;
-        }
-        const filePath = req.file.path;
-        const content = fs_1.default.readFileSync(filePath, "utf-8");
+        const content = yield promises_1.default.readFile(filePath, "utf-8");
         const hash = fileHash(content);
-        // Return cached report if file was analyzed before
+        // Return cached report if available
         if (reportCache.has(hash)) {
-            res.json({ success: true, report: reportCache.get(hash), cached: true });
-            return;
+            lastReport = reportCache.get(hash); // ✅ update lastReport
+            return res.json({
+                success: true,
+                report: lastReport,
+                cached: true,
+            });
         }
-        // Chunk content instead of slicing 5000 chars
-        const chunks = chunkContent(content, 20000);
-        const limitedContent = chunks.slice(0, 6).join("\n---CHUNK SPLIT---\n");
+        // Chunk content (limit 7 chunks)
+        const chunks = chunkContent(content, 20000).slice(0, 6);
+        const limitedContent = chunks.join("\n---CHUNK SPLIT---\n");
         const aiPrompt = `
 You are an AI assistant specialized in API analysis. Your task is to analyze the provided file content, which is expected to be from a .har, .json, or .log file containing API-related data.
-**Important:** Return only JSON—either the full report or an error object—with no additional text.
+IMPORTANT: Output ONLY a single valid JSON object. No text, no markdown fences, no explanations and not forget to add mermaid scripts.
+If you cannot produce valid JSON, return: {"error":"Unable to generate report"}.
 **Instructions:**
 
 1. **Check Content Validity:**  
@@ -185,19 +173,17 @@ You are an AI assistant specialized in API analysis. Your task is to analyze the
      - Identify sequence flows (matching FlowItem).  
      - Provide security insights (matching SecurityIssue).  
    - Return the output strictly as a JSON object that conforms to the APIWatchdogReport interface defined below.
+   - For ReportStats, ensure totalEndpoints, totalFlows, and totalIssues accurately reflect the counts in your extracted data.
 
 3. **Normalization notes:**
    - Replace every ID-like segment with {id}. If multiple id-like segments exist, replace each with {id} (e.g., /a/123/b/456 -> /a/{id}/b/{id}).
    - Preserve query parameters; do not convert them to path params.
    - For mixed-case path inconsistencies, choose a consistent lowercase form for spec paths but include a security.issues entry warning about mixed-case paths.
+   - Endpoints should be conistent fot endpoints, specs, security issues and ReportStats.
 
-**Full TypeScript Interface Definition for APIWatchdogReport:**
+**Importnt Note: Every information should be consistent throughout each section**
 
 \`\`\`typescript
-/**
- * APIWatchdogReport model for backend (Express + TypeScript)
- * Defines the structure of the JSON payload sent to the client.
- */
 
 /**
  * Top-level APIWatchdog report
@@ -214,10 +200,10 @@ export interface APIWatchdogReport {
  * Overall report metadata
  */
 export interface ReportMeta {
-  title: string;        // e.g. "APIWatchdog Analysis Report"
-  heading: string;      // e.g. "Comprehensive API Analysis"
-  description: string;  // High-level summary
-  stats: ReportStats;   // counts for quick overview
+  title: string;       
+  heading: string;      
+  description: string;  
+  stats: ReportStats;   
 }
 
 export interface ReportStats {
@@ -230,9 +216,9 @@ export interface ReportStats {
  * Common header for each report section
  */
 export interface SectionHeader {
-  title: string;        // e.g. "Discovered Endpoints"
-  heading: string;      // e.g. "1. Discover Endpoints"
-  description: string;  // Short note about this section
+  title: string;
+  heading: string;
+  description: string;
 }
 
 /**
@@ -246,11 +232,11 @@ export interface EndpointsSection extends SectionHeader {
  * Represents a single API endpoint
  */
 export interface EndpointItem {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';          // HTTP method, e.g. "GET"
-  path: string;              // URL path, e.g. "/users/:id"
-  status: 'success' | 'warning' | 'error';          // e.g. "✅", "❗Missing schema"
-  description?: string;      // Optional descriptive text
-  usageFrequency?: number;   // Optional usage count
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  path: string;
+  status: 'success' | 'warning' | 'error';
+  description?: string;
+  usageFrequency?: number;
   requestExample?: object;
   responseExample?: object;
 }
@@ -303,10 +289,10 @@ export interface FlowOverview {
  * Single sequence flow item
  */
 export interface FlowItem {
-  id: string;            // Unique flow ID
-  title: string;         // e.g. "User Login Flow"
-  description?: string;  // Optional summary
-  mermaidScript: string; // Raw Mermaid script
+  id: string;
+  title: string;
+  description?: string;
+  mermaidScript: string;
 }
 
 /**
@@ -316,103 +302,92 @@ export interface SecuritySection extends SectionHeader {
   issues: SecurityIssue[];
 }
 
-/**
- * Single security issue
- */
+
 export interface SecurityIssue {
-  id: string;            // Unique issue ID
-  title: string;         // e.g. "No rate limiting"
-  description: string;   // Explanation of issue
-  endpoint: string;      // Affected endpoint path
+  id: string;
+  title: string;
+  description: string;
+  endpoint: string;
   severity: 'High' | 'Medium' | 'Low';
-  severityBadge?: string;   // e.g. "❌", "⚠️"
+  severityBadge?: string;
   recommendation: string;
   remediationSteps:string[];
   tag:string;
-  resourceLink?: string;     // Link to best-practice or OWASP doc
+  resourceLink?: string;
 }
 \`\`\`
-
-**Content to Analyze (chunked, up to 6 chunks):**
 \`\`\`
 ${limitedContent}
 \`\`\`
 
 
 `;
-        // send request to OpenRouter / model
+        // Async AI call
         const aiResponse = yield axios_1.default.post("https://openrouter.ai/api/v1/chat/completions", {
-            model: "deepseek/deepseek-chat-v3.1:free",
-            messages: [{ role: "user", content: aiPrompt }],
+            model: "x-ai/grok-4-fast:free",
+            messages: [
+                { role: "user", content: aiPrompt }
+            ],
             temperature: 0,
             top_p: 1,
             frequency_penalty: 0,
             presence_penalty: 0,
+            verbosity: "high",
+            reasoning: {
+                effort: 'high'
+            },
         }, {
             headers: {
                 Authorization: `Bearer ${apiKey}`,
                 "Content-Type": "application/json",
             },
-            timeout: 120000, // 120s in case the model takes time
         });
-        // Pull possible locations for the model text
-        const choices = (_a = aiResponse === null || aiResponse === void 0 ? void 0 : aiResponse.data) === null || _a === void 0 ? void 0 : _a.choices;
-        if (!choices || choices.length === 0) {
-            console.error("AI response has no choices:", aiResponse === null || aiResponse === void 0 ? void 0 : aiResponse.data);
-            res.status(502).json({ error: "Empty AI response" });
-            return;
-        }
-        // Try different places the model might place the content
-        let rawContent;
-        // openrouter style: choices[0].message.content
-        rawContent = (_d = (_c = (_b = choices[0]) === null || _b === void 0 ? void 0 : _b.message) === null || _c === void 0 ? void 0 : _c.content) !== null && _d !== void 0 ? _d : (_g = (_f = (_e = choices[0]) === null || _e === void 0 ? void 0 : _e.message) === null || _f === void 0 ? void 0 : _f.content) === null || _g === void 0 ? void 0 : _g.toString();
-        // fallback: choices[0].text
-        if (!rawContent && ((_h = choices[0]) === null || _h === void 0 ? void 0 : _h.text))
-            rawContent = choices[0].text;
-        // fallback: choices[0].delta?.content (streaming style)
-        if (!rawContent && ((_k = (_j = choices[0]) === null || _j === void 0 ? void 0 : _j.delta) === null || _k === void 0 ? void 0 : _k.content))
-            rawContent = choices[0].delta.content;
-        // If still not present, as a last fallback stringify the entire response body
-        if (!rawContent)
-            rawContent = JSON.stringify(aiResponse.data);
-        // Try to sanitize and parse JSON robustly
-        const parsedReport = safeParseJsonFromAiResponse(rawContent);
+        const rawContent = (_j = (_e = (_d = (_c = (_b = (_a = aiResponse === null || aiResponse === void 0 ? void 0 : aiResponse.data) === null || _a === void 0 ? void 0 : _a.choices) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.message) === null || _d === void 0 ? void 0 : _d.content) !== null && _e !== void 0 ? _e : (_h = (_g = (_f = aiResponse === null || aiResponse === void 0 ? void 0 : aiResponse.data) === null || _f === void 0 ? void 0 : _f.choices) === null || _g === void 0 ? void 0 : _g[0]) === null || _h === void 0 ? void 0 : _h.text) !== null && _j !== void 0 ? _j : JSON.stringify(aiResponse.data);
+        const parsedReport = safeParseJson(rawContent);
         if (!parsedReport) {
-            // Write a small debug snippet to disk for inspection (do not dump huge outputs)
-            try {
-                const dbgPath = path_1.default.join(process.cwd(), "ai_response_debug_snippet.txt");
-                const snippet = rawContent.slice(0, 20000); // first 20k chars
-                fs_1.default.writeFileSync(dbgPath, snippet, { encoding: "utf-8" });
-                console.error(`Failed to parse JSON from AI response. Debug snippet written to ${dbgPath}`);
-            }
-            catch (fsErr) {
-                console.error("Failed to write debug snippet:", fsErr);
-            }
-            console.error("❌ Failed to parse AI JSON. Raw content preview:", rawContent.slice(0, 500));
-            res.status(500).json({ error: "Invalid AI response - unable to extract JSON. A debug snippet was saved on server." });
-            return;
+            console.error("Failed to parse AI response");
+            return res.status(502).json({
+                error: "Invalid AI response",
+                message: "Unable to extract JSON from AI. Ensure file contains valid API data.",
+            });
         }
-        // At this point parsedReport is an object
+        // Cache + save last report
+        reportCache.set(hash, parsedReport);
         lastReport = parsedReport;
-        addToCache(hash, parsedReport);
-        res.json({ success: true, report: parsedReport });
+        return res.json({
+            success: true,
+            report: parsedReport,
+            cached: false,
+        });
     }
     catch (err) {
-        console.error("Processing failed:", (_l = err === null || err === void 0 ? void 0 : err.message) !== null && _l !== void 0 ? _l : err);
-        res.status(500).json({ error: "Processing failed", detail: (_m = err === null || err === void 0 ? void 0 : err.message) !== null && _m !== void 0 ? _m : String(err) });
+        if (axios_1.default.isAxiosError(err)) {
+            console.error("Axios error:", {
+                status: (_k = err.response) === null || _k === void 0 ? void 0 : _k.status,
+                data: (_l = err.response) === null || _l === void 0 ? void 0 : _l.data,
+                headers: (_m = err.response) === null || _m === void 0 ? void 0 : _m.headers,
+            });
+        }
+        else {
+            console.error("Unknown error:", err);
+        }
+        return res.status(500).json({
+            error: "Processing failed",
+            detail: (_o = err.message) !== null && _o !== void 0 ? _o : String(err),
+        });
     }
     finally {
-        // optionally remove uploaded file to avoid disk growth
         try {
-            if (req.file && req.file.path) {
-                fs_1.default.unlink(req.file.path, () => { });
-            }
+            if ((_p = req.file) === null || _p === void 0 ? void 0 : _p.path)
+                yield promises_1.default.unlink(req.file.path);
         }
-        catch (e) {
-            // ignore
-        }
+        catch (_q) { }
     }
-}));
+})));
+// -------------------- EXPORTS --------------------
+function getLastReport() {
+    return lastReport;
+}
 exports.default = router;
 // import express, { Request, Response } from "express";
 // import multer from "multer";
