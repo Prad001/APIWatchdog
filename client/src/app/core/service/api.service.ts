@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap, shareReplay } from 'rxjs/operators';
 import { APIWatchdogReport } from '../../../models/api-watchdog.model'; // adjust path if needed
+import { environment } from '@env';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:3000/api'; // Express server
+  private baseUrl = environment.apiUrl; 
 
   // 🔹 Store report state locally (shared across app)
   private reportSubject = new BehaviorSubject<APIWatchdogReport | null>(null);
@@ -26,14 +27,14 @@ export class ApiService {
   uploadFile(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post(`${this.baseUrl}/upload`, formData);
+    return this.http.post(`${this.baseUrl}/api/upload`, formData);
   }
 
   /**
    * Fetch report from backend and cache it
    */
   getReport(): Observable<APIWatchdogReport> {
-    return this.http.get<APIWatchdogReport>(`${this.baseUrl}/report`).pipe(
+    return this.http.get<APIWatchdogReport>(`${this.baseUrl}/api/report`).pipe(
       tap(report => this.reportSubject.next(report)), // update cache
       shareReplay(1) // share same value across multiple subscribers
     );
