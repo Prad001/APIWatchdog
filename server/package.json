@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "nodemon",
-    "build": "tsc"
+    "dev": "nodemon src/www.ts",
+    "build": "tsc",
+    "start": "node dist/www.js"
   },
   "keywords": [],
   "author": "",
