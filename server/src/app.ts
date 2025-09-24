@@ -11,6 +11,8 @@ import reportRouter from "./routes/reports/report.js";
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 // Set up static folder to serve images
 app.use('/diagrams', express.static(path.join(__dirname, '../../public/diagrams')));
 
