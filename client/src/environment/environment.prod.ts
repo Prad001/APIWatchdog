@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://apiwatchdog.shelkepradeep.com:3001',
+  apiUrl: 'https://apiwatchdog.shelkepradeep.in/api',
 };
