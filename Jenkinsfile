@@ -14,14 +14,16 @@ stage('Build Angular Client') {
             dir('client') {
                 sh 'npm install'
                 sh 'npx ng analytics disable || true'
-                // Limit Node.js memory usage to 1.2 GB instead of 2 GB
-                sh 'node --max-old-space-size=1200 ./node_modules/@angular/cli/bin/ng build --configuration production'
+                sh 'npm cache clean --force || true'
+                sh 'node --max-old-space-size=896 ./node_modules/@angular/cli/bin/ng build --configuration production'
                 sh 'sudo mkdir -p /var/www/html/APIWatchdog'
+                sh 'sudo rm -rf /var/www/html/APIWatchdog/*'
                 sh 'sudo cp -r ./dist/* /var/www/html/APIWatchdog/'
             }
         }
     }
 }
+
 
 
         stage('Build Express Server') {
