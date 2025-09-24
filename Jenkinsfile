@@ -21,7 +21,7 @@ stage('Build Angular Client') {
                 // Deploy Angular build (no sudo)
                 sh """
                     rm -rf $ANGULAR_DIST_PATH/*
-                    cp -r dist/browser/* $ANGULAR_DIST_PATH/
+                    cp -r dist/client/browser/* $ANGULAR_DIST_PATH/
                   """
             }
         }
