@@ -15,13 +15,7 @@ const app = express();
 app.use('/diagrams', express.static(path.join(__dirname, '../../public/diagrams')));
 
 const originsWhitelist = [
-  'http://localhost:4200', // development
-  'http://localhost:9000', // test
-  'http://localhost:3000', // test
-  'http://localhost:8080',
-  'http://localhost:8081',
-  'http://localhost:5111',
-  'http://localhost:7100'
+  'https://apiwatchdog.shelkepradeep.com',
 ];
 const corsOptions = {
   origin: function(origin: any, callback: any){
