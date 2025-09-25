@@ -16,17 +16,31 @@ app.set('trust proxy', 1);
 // Set up static folder to serve images
 app.use('/diagrams', express.static(path.join(__dirname, '../../public/diagrams')));
 
-const originsWhitelist = [
+// CORS: allow Angular frontend
+const allowedOrigins = [
   'https://apiwatchdog.shelkepradeep.in',
 ];
-const corsOptions = {
-  origin: function(origin: any, callback: any){
-    const isWhitelisted = originsWhitelist.indexOf(origin) !== -1;
-    callback(null, isWhitelisted);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (like curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // reject others
+    return callback(new Error('Not allowed by CORS'));
   },
-  credentials:true
-};
-app.use(cors(corsOptions));
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+}));
+
+app.options('*', (req, res) => {
+  res.status(204).send(); 
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
