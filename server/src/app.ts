@@ -37,13 +37,14 @@ app.use(cors({
 }));
 
 // Handle preflight requests
-app.options("(.*)", (req: Request, res: Response) => {
+app.options(/.*/, (req: Request, res: Response) => {
   res.header("Access-Control-Allow-Origin", req.headers.origin || allowedOrigins[0]);
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
   res.header("Access-Control-Allow-Credentials", "true");
   res.status(204).send();
 });
+
 
 
 app.use(bodyParser.json({ limit: '10mb' }));
