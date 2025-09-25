@@ -9,6 +9,7 @@ import { ApiService } from '../core/service/api.service'; // adjust path if need
 import { SnackMessageComponent } from '../shared/snack-message/snack-message.component';
 import { RouterLink } from '@angular/router';
 import { LoadingService } from '../core/service/loading.service';
+import { environment } from '@env';
 
 @Component({
   selector: 'app-home',
@@ -27,6 +28,7 @@ import { LoadingService } from '../core/service/loading.service';
 export class HomeComponent {
   uploadedFileName: string | null = null;
   isUploading = false;
+  docsUrl = environment.docsUrl; // Access docsUrl from environment
 
   constructor(
     private snackBar: MatSnackBar,

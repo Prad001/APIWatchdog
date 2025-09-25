@@ -5,6 +5,7 @@ import { filter, Subscription } from 'rxjs';
 import { ApiService } from '../../core/service/api.service';
 import { ConfirmDialogComponent } from '../dialog/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { environment } from '@env';
 
 @Component({
   selector: 'app-side-navbar',
@@ -18,14 +19,15 @@ export class SideNavbarComponent {
 
   activeLink: string = '';
   isTitle: string = '';
+  docsUrl = environment.docsUrl;
   private routerSubscription: Subscription = new Subscription();
 
 helpLinks: { [key: string]: string } = {
-  endpointDetails: 'http://localhost:4321/docs/discover-endpoints/',
-  specsView: 'http://localhost:4321/docs/generate-specs/',
-  flow: 'http://localhost:4321/docs/visualize-flows/',
-  securityInsights: 'http://localhost:4321/docs/security-analysis/',
-  fullReport: 'http://localhost:4321/docs/full-report/'
+  endpointDetails: `${this.docsUrl}` + '/docs/discover-endpoints/',
+  specsView: `${this.docsUrl}` + '/docs/generate-specs/',
+  flow: `${this.docsUrl}` + '/docs/visualize-flows/',
+  securityInsights: `${this.docsUrl}` + '/docs/security-analysis/',
+  fullReport: `${this.docsUrl}` + '/docs/full-report/'
 };
 
 
