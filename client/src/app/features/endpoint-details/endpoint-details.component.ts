@@ -19,21 +19,21 @@ export class EndpointDetailsComponent implements OnInit {
 
   constructor(private apiService: ApiService) {}
 
-  ngOnInit(): void {
-    // ✅ Subscribe to report from service
-    this.apiService.getReport().subscribe({
-      next: (report: APIWatchdogReport) => {
-        this.apiEndpoints = report.endpoints.items;
-        this.filteredEndpoints = [...this.apiEndpoints];
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Failed to load endpoints:', err);
-        this.error = 'Could not load endpoint details';
-        this.loading = false;
-      }
-    });
-  }
+ngOnInit(): void {
+  this.apiService.getReport().subscribe({
+    next: (report: APIWatchdogReport) => {
+      this.apiEndpoints = report?.endpoints?.items ?? [];
+      this.filteredEndpoints = [...this.apiEndpoints];
+      this.loading = false;
+    },
+    error: (err) => {
+      console.error('Failed to load endpoints:', err);
+      this.error = 'Could not load endpoint details';
+      this.loading = false;
+    }
+  });
+}
+
 
   toggleMethod(method: string) {
     if (method === 'ALL') {
@@ -66,11 +66,12 @@ export class EndpointDetailsComponent implements OnInit {
     return this.selectedMethods.has(method);
   }
 
-  getTotalEndpoints(): number {
-    return this.apiEndpoints.length;
-  }
+getTotalEndpoints(): number {
+  return this.apiEndpoints?.length ?? 0;
+}
 
-  getCountByStatus(status: string): number {
-    return this.apiEndpoints.filter(ep => ep.status === status).length;
-  }
+getCountByStatus(status: string): number {
+  return this.apiEndpoints?.filter(ep => ep.status === status).length ?? 0;
+}
+
 }

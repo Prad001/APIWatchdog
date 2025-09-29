@@ -33,7 +33,7 @@ const upload = multer({
 // Rate limiting to prevent abuse
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 10, // max 30 requests/minute per IP
+  max: 5, // max 5 requests/minute per IP
   message: { error: "Too many requests, please try again later." },
 });
 router.use(limiter);
@@ -162,7 +162,9 @@ router.post(
 
       const aiPrompt = `
 You are an AI assistant specialized in API analysis. Your task is to analyze the provided file content, which is expected to be from a .har, .json, or .log file containing API-related data.
-IMPORTANT: Output ONLY a single valid JSON object. No text, no markdown fences, no explanations and not forget to add mermaid scripts.
+IMPORTANT: Output ONLY a single valid JSON object. No text, no markdown fences, no explanations and The FlowsSection must contain FlowItem objects each with a mermaidScript.
+The SpecsApiDocs must contain a specScript which is strictly an OpenAPI YAML string.
+Never place mermaidScript in the spec section.
 If you cannot produce valid JSON, return: {"error":"Unable to generate report"}.
 **Instructions:**
 
@@ -173,7 +175,10 @@ If you cannot produce valid JSON, return: {"error":"Unable to generate report"}.
 2. **If Content is Valid:**  
    - Extract the following:  
      - Endpoints with methods, paths, status, etc. (matching EndpointItem).  
-     - Generate an OpenAPI spec (matching SpecsApiDocs).  
+     - The specScript field must contain the FULL OpenAPI 3.0 YAML.
+     - Do not reference "above", "see above", or insert comments like "# abbreviated" or "# defined above".
+     - The specScript must be self-contained and include ALL endpoints explicitly, even if already listed elsewhere.
+     - Placeholders or comments are forbidden inside specScript.
      - Identify sequence flows (matching FlowItem).  
      - Provide security insights (matching SecurityIssue).  
    - Return the output strictly as a JSON object that conforms to the APIWatchdogReport interface defined below.
@@ -328,31 +333,32 @@ ${limitedContent}
 `;
 
       // Async AI call
-const aiResponse = await axios.post(
-  "https://openrouter.ai/api/v1/chat/completions",
-  {
-    model: "x-ai/grok-4-fast:free",
-    messages: [
-      { role: "user", content: aiPrompt }
-    ],
-    temperature: 0,
-    top_p: 1,
-    frequency_penalty: 0,
-    presence_penalty: 0,
-    verbosity: "high",
-     reasoning: {
+      const aiResponse = await axios.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        {
+          model: "x-ai/grok-4-fast:free",
+          messages: [
+            { role: "user", content: aiPrompt }
+          ],
+          temperature: 0,
+          top_p: 1,
+          frequency_penalty: 0,
+          presence_penalty: 0,
+          verbosity: "low",
+          response_format: { "type": "json_object" },
+          reasoning: {
 
-      effort: 'high'
+            effort: 'high'
 
-    },
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-  }
-);
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
 
       const rawContent =
@@ -382,18 +388,18 @@ const aiResponse = await axios.post(
       });
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
-    console.error("Axios error:", {
-      status: err.response?.status,
-      data: err.response?.data,
-      headers: err.response?.headers,
-    });
-  } else {
-    console.error("Unknown error:", err);
-  }
-  return res.status(500).json({
-    error: "Processing failed",
-    detail: err.message ?? String(err),
-  });
+        console.error("Axios error:", {
+          status: err.response?.status,
+          data: err.response?.data,
+          headers: err.response?.headers,
+        });
+      } else {
+        console.error("Unknown error:", err);
+      }
+      return res.status(500).json({
+        error: "Processing failed",
+        detail: err.message ?? String(err),
+      });
     } finally {
       try {
         if (req.file?.path) await fs.unlink(req.file.path);
